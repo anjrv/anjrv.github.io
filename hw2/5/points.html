@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script id="vertex-shader" type="x-shader/x-vertex">
+
+      attribute vec4 vPosition;
+
+      void
+      main()
+      {
+          // Stækkum punktana svo þeir sjáist!
+          // gl_PointSize = 5.0;
+          gl_Position = vPosition;
+      }
+    </script>
+
+    <script id="fragment-shader" type="x-shader/x-fragment">
+
+      precision mediump float;
+
+      varying vec4 fColor;
+      void
+      main()
+      {
+          // Teiknar gula punkta
+          gl_FragColor = vec4( 1.0, 1.0, 0.0, 1.0 );
+      }
+    </script>
+
+    <script type="text/javascript" src="points_files/webgl-utils.js"></script>
+    <script type="text/javascript" src="points_files/initShaders.js"></script>
+    <script type="text/javascript" src="points_files/MV.js"></script>
+    <script type="text/javascript" src="points_files/points.js"></script></head
+  ><iframe
+    class="cleanslate hidden"
+    src="points_files/commandline.html"
+    id="cmdline_iframe"
+    loading="lazy"
+    style="height: 0px !important"
+  ></iframe>
+  <body oncontextmenu="return false;">
+    <canvas id="gl-canvas" width="512" height="512"
+      >&gt; Oops ... your browser doesn't support the HTML5 canvas element
+    </canvas>
+  </body>
+</html>
