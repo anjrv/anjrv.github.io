@@ -39,7 +39,6 @@ window.onload = function init() {
     if (index === maxNumTriangles) return;
 
     if (e.button === 2) {
-      gl.bufferData(gl.ARRAY_BUFFER, 24 * maxNumTriangles, gl.DYNAMIC_DRAW);
       index = 0;
 
       return;

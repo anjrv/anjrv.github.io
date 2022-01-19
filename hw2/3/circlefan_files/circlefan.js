@@ -60,7 +60,8 @@ function createCirclePoints(cent, rad, k) {
   points.push(cent);
 
   var dAngle = (2 * Math.PI) / k;
-  for (i = k; i >= 0; i--) {
+  // Explicitly create final connecting triangle ( + 2 )
+  for (i = k + 2; i >= 0; i--) {
     a = i * dAngle;
     var p = vec2(rad * Math.sin(a) + cent[0], rad * Math.cos(a) + cent[1]);
     points.push(p);
@@ -72,10 +73,7 @@ window.onload = init;
 function render() {
   createCirclePoints(center, radius, numCirclePoints);
 
-  gl.bufferData(gl.ARRAY_BUFFER, 8*Math.pow(3, 7), gl.STATIC_DRAW);
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(points));
   gl.clear(gl.COLOR_BUFFER_BIT);
   gl.drawArrays(gl.TRIANGLE_FAN, 0, numCirclePoints + 2);
-
-  // window.requestAnimFrame(render);
 }
