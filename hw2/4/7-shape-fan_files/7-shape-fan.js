@@ -6,6 +6,7 @@
 //////////////////////////////////////////////////////////////////////
 var gl;
 var points;
+var vertices;
 
 window.onload = function init()
 {
@@ -14,12 +15,14 @@ window.onload = function init()
     gl = WebGLUtils.setupWebGL( canvas );
     if ( !gl ) { alert( "WebGL isn't available" ); }
 
-    var vertices = new Float32Array([ 0.75,  0.75,
-                                     -0.65,  0.75,
-                                     -0.65,  0.35,
-                                      0.2,   0.35,
-                                      0.0,  -0.75,
-                                      0.5,  -0.75]);
+    vertices = new Float32Array([
+      0.5, -0.75,
+      0.0, -0.75,
+      0.75, 0.75,
+      0.2, 0.35,
+      -0.65, 0.75,
+      -0.65, 0.35
+    ]); 
 
     //  Configure WebGL
 
@@ -49,5 +52,5 @@ window.onload = function init()
 
 function render() {
     gl.clear( gl.COLOR_BUFFER_BIT );
-    gl.drawArrays( gl.TRIANGLE_STRIP, 0, 6 );
+    gl.drawArrays( gl.TRIANGLE_STRIP, 0, vertices.length/2 );
 }
