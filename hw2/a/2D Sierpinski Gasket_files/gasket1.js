@@ -3,7 +3,7 @@
 var gl;
 var points;
 
-var NumPoints = 50000;
+var NumPoints = 5000;
 
 window.onload = function init() {
   var canvas = document.getElementById('gl-canvas');
@@ -19,14 +19,14 @@ window.onload = function init() {
 
   // First, initialize the corners of our gasket with three points.
 
-  var vertices = [vec2(-1, -1), vec2(100, 100), vec2(1, -1)];
+  var vertices = [vec2(-1, -1), vec2(0, 1), vec2(1, -1)];
 
   // Specify a starting point p for our iterations
   // p must lie inside any set of three vertices
 
-  var u = add(vertices[0], vertices[1]);
-  var v = add(vertices[0], vertices[2]);
-  var p = scale(0.25, add(u, v));
+  // var u = add(vertices[0], vertices[1]);
+  // var v = add(vertices[0], vertices[2]);
+  var p = scale(0.25, vec2(100, 100));
 
   // And, add our initial point into our array of points
 
