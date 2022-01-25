@@ -54,6 +54,19 @@ function drawRect(x, y, sideLength) {
   return rectVerts;
 }
 
+
+/**
+ * Draws a visual aid for the current score the player has
+ */
+function drawScores(allVertices, allColors) {
+  for (let i = 20; i < (score + 1) * 20; i += 20) {
+    for (let j = 20; j < 80; j += 10) {
+      allVertices.push(...drawRect(i, j, 10));
+      allColors.push(...scoreColors);
+    }
+  }
+}
+
 function checkScoreCollisions() {
   for (let i = scores.length - 1; i >= 0; i--) {
     if (scores[i].checkPlayerCollision()) {
@@ -63,7 +76,7 @@ function checkScoreCollisions() {
   }
 }
 
-function updateState() {
+function updateState(allVertices, allColors) {
   if (!monster) {
     // Spawn monster randomly
   }
@@ -87,6 +100,7 @@ function updateState() {
   }
 
   document.getElementById('score').innerHTML = score;
+  drawScores(allVertices, allColors);
 }
 
 function computeChange(allVertices, allColors) {
@@ -96,7 +110,7 @@ function computeChange(allVertices, allColors) {
 
   checkScoreCollisions();
 
-  updateState();
+  updateState(allVertices, allColors);
 
   scores.forEach(function (score) {
     allVertices.push(...drawRect(score.x, score.y, scoreSize));
@@ -112,7 +126,6 @@ function render() {
       computeChange(allVertices, allColors); // Changes allVertices
 
       N = allVertices.length;
-
 
       const vPosition = gl.getAttribLocation(program, 'aVertexPosition');
       const vColor = gl.getAttribLocation(program, 'aVertexColor');
