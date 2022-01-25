@@ -5,9 +5,13 @@ const fps = 60;
 
 let canvas;
 let gl;
+let program;
+let colorBuffer;
+let positionBuffer;
 
 let N = 0;
 let score = 0;
+let gameOver = false;
 let monster = null;
 
 /**
@@ -102,14 +106,30 @@ function computeChange(allVertices, allColors) {
 
 function render() {
   setTimeout(() => {
-    if (score < 10) {
+    if (score < 10 && !gameOver) {
       let allVertices = [];
       let allColors = [];
       computeChange(allVertices, allColors); // Changes allVertices
 
       N = allVertices.length;
-      allVertices.push(...allColors);
+
+
+      const vPosition = gl.getAttribLocation(program, 'aVertexPosition');
+      const vColor = gl.getAttribLocation(program, 'aVertexColor');
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+      gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(vPosition);
       gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(allVertices));
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+      gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(vColor);
+      gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(allColors));
+    } else {
+      document.getElementById('score').innerHTML = gameOver
+        ? 'Game Over!'
+        : 'Victory!';
     }
 
     gl.clear(gl.COLOR_BUFFER_BIT);
@@ -130,27 +150,17 @@ window.onload = function init() {
   gl.viewport(0, 0, canvas.width, canvas.height);
   gl.clearColor(0.8, 0.8, 0.8, 1.0);
 
-  const program = initShaders(gl, 'vertex-shader', 'fragment-shader');
+  program = initShaders(gl, 'vertex-shader', 'fragment-shader');
   gl.useProgram(program);
 
   // Load the data into the GPU
-  const bufferId = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
-  gl.bufferData(gl.ARRAY_BUFFER, 12000, gl.DYNAMIC_DRAW);
-
-  const colorBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+  positionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, 12000, gl.STATIC_DRAW);
 
-  // Associate out shader variables with our data buffer
-  const vPosition = gl.getAttribLocation(program, 'aVertexPosition');
-  const vColor = gl.getAttribLocation(program, 'aVertexColor');
-
-  gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(vPosition);
-
-  gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(vColor);
+  colorBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, 12000, gl.STATIC_DRAW);
 
   window.addEventListener('keydown', handleKeydown);
   window.addEventListener('keyup', handleKeyup);

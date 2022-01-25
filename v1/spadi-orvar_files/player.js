@@ -53,6 +53,5 @@ function playerChange() {
     jumpFrames--;
   }
 
-  // Copy content over
   return drawRect(playerX, playerY, playerHalfLength * 2);
 }
