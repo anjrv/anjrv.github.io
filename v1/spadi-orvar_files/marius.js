@@ -54,7 +54,6 @@ function drawRect(x, y, sideLength) {
   return rectVerts;
 }
 
-
 /**
  * Draws a visual aid for the current score the player has
  */
@@ -78,7 +77,21 @@ function checkScoreCollisions() {
 
 function updateState(allVertices, allColors) {
   if (!monster) {
-    // Spawn monster randomly
+    if (Math.random() > 0.998) {
+      const x = playerX > canvas.width / 2 ? 30 : canvas.width - 30;
+      const direction = x < canvas.width / 2 ? 1 : -1;
+      monster = new Monster({ x: x, y: canvas.height - 30, size: 60, dir: direction });
+    }
+  } else {
+    if (monster.x < 0 || monster.x > canvas.width) {
+      monster = null;
+    } else {
+      monster.draw(allVertices, allColors);
+      monster.x += monster.dir * 5;
+      if (monster.checkPlayerCollision()) {
+        gameOver = true;
+      }
+    }
   }
 
   if (Math.random() > 0.995) {
