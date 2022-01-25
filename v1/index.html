@@ -4,24 +4,25 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <script id="vertex-shader" type="x-shader/x-vertex">
 
-      attribute vec4 vPosition;
+      attribute vec4 aVertexPosition;
+      attribute vec4 aVertexColor;
 
-      void
-      main()
+      varying lowp vec4 vColor;
+
+      void main()
       {
-          gl_Position = vPosition;
+        gl_Position = aVertexPosition;
+        vColor = aVertexColor;
       }
     </script>
 
     <script id="fragment-shader" type="x-shader/x-fragment">
+      precision lowp float;
+      varying vec4 vColor;
 
-      precision mediump float;
-
-      varying vec4 fColor;
-      void
-      main()
+      void main()
       {
-          gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        gl_FragColor = vColor;
       }
     </script>
 
@@ -34,18 +35,14 @@
       src="spadi-orvar_files/initShaders.js"
     ></script>
     <script type="text/javascript" src="spadi-orvar_files/MV.js"></script>
-    <script
-      type="text/javascript"
-      src="spadi-orvar_files/spadi-orvar.js"
-    ></script></head
-  ><iframe
-    class="cleanslate hidden"
-    src="spadi-orvar_files/commandline.html"
-    id="cmdline_iframe"
-    loading="lazy"
-    style="height: 0px !important"
-  ></iframe>
+    <script type="text/javascript" src="spadi-orvar_files/keys.js"></script>
+    <script type="text/javascript" src="spadi-orvar_files/player.js"></script>
+    <script type="text/javascript" src="spadi-orvar_files/score.js"></script>
+    <script type="text/javascript" src="spadi-orvar_files/marius.js"></script>
+  </head>
+
   <body>
     <canvas id="gl-canvas" width="800" height="800"> </canvas>
+    <p id="score">0</span>
   </body>
 </html>
