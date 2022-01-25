@@ -18,6 +18,9 @@ let playerDir = 1;
 let jumpFrames = 0;
 
 function playerChange() {
+  const oldX = playerX;
+  const oldY = playerY;
+
   if (jumpFrames === 0) {
     if (keys[left]) {
       if (playerX > playerHalfLength) {

@@ -117,7 +117,6 @@ function updateState(allVertices, allColors) {
 }
 
 function computeChange(allVertices, allColors) {
-  // Append playerchange to this round of vertices
   allVertices.push(...playerChange());
   allColors.push(...playerColors);
 
