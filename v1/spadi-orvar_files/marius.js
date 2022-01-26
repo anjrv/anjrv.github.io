@@ -28,6 +28,26 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function drawTriangle(x, y, sideLength, direction) {
+  const midX = (2 * x) / canvas.width - 1;
+  const midY = (2 * (canvas.height - y)) / canvas.height - 1;
+  const vertDiff = sideLength / canvas.width; // Assume width === height
+
+  if (direction < 0) {
+    return [
+      vec2(midX - vertDiff, midY),
+      vec2(midX + vertDiff, midY + vertDiff),
+      vec2(midX + vertDiff, midY - vertDiff),
+    ];
+  }
+
+  return [
+    vec2(midX + vertDiff, midY),
+    vec2(midX - vertDiff, midY + vertDiff),
+    vec2(midX - vertDiff, midY - vertDiff),
+  ]
+}
+
 /**
  * Helper function to translate screenspace x, y and sidelength
  * into a vec2 rectangle (actually square) that can be drawn.
@@ -80,7 +100,12 @@ function updateState(allVertices, allColors) {
     if (Math.random() > 0.998) {
       const x = playerX > canvas.width / 2 ? 30 : canvas.width - 30;
       const direction = x < canvas.width / 2 ? 1 : -1;
-      monster = new Monster({ x: x, y: canvas.height - 30, size: 60, dir: direction });
+      monster = new Monster({
+        x: x,
+        y: canvas.height - 30,
+        size: 60,
+        dir: direction,
+      });
     }
   } else {
     if (monster.x < 0 || monster.x > canvas.width) {
@@ -120,6 +145,9 @@ function computeChange(allVertices, allColors) {
   allVertices.push(...playerChange());
   allColors.push(...playerColors);
 
+  allVertices.push(...drawTriangle(playerX, playerY, playerHalfLength * 2, playerDir));
+  allColors.push(...playerPointerColors);
+
   checkScoreCollisions();
 
   updateState(allVertices, allColors);
@@ -132,7 +160,7 @@ function computeChange(allVertices, allColors) {
   wallTiles.forEach(function (tile) {
     allVertices.push(...drawRect(tile.x, tile.y, wallSize));
     allColors.push(...wallColors);
-  })
+  });
 }
 
 function render() {
