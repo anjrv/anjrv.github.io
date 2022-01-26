@@ -94,7 +94,7 @@ function updateState(allVertices, allColors) {
     }
   }
 
-  if (Math.random() > 0.995) {
+  if (Math.random() > 0.988) {
     const half = scoreSize / 2;
     scores.push(
       new Score({
@@ -128,6 +128,11 @@ function computeChange(allVertices, allColors) {
     allVertices.push(...drawRect(score.x, score.y, scoreSize));
     allColors.push(...scoreColors);
   });
+
+  wallTiles.forEach(function (tile) {
+    allVertices.push(...drawRect(tile.x, tile.y, wallSize));
+    allColors.push(...wallColors);
+  })
 }
 
 function render() {
@@ -189,6 +194,11 @@ window.onload = function init() {
 
   window.addEventListener('keydown', handleKeydown);
   window.addEventListener('keyup', handleKeyup);
+
+  wallTiles.push(new WallTile({ x: 200, y: 760 }));
+  wallTiles.push(new WallTile({ x: 200, y: 680 }));
+  wallTiles.push(new WallTile({ x: 600, y: 760 }));
+  wallTiles.push(new WallTile({ x: 600, y: 680 }));
 
   render();
 };

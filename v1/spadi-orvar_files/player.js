@@ -18,8 +18,8 @@ let playerDir = 1;
 let jumpFrames = 0;
 
 function playerChange() {
-  const oldX = playerX;
-  const oldY = playerY;
+  const prevX = playerX;
+  const prevY = playerY;
 
   if (jumpFrames === 0) {
     if (keys[left]) {
@@ -54,6 +54,16 @@ function playerChange() {
     }
 
     jumpFrames--;
+  }
+
+  if (checkWallY() && checkWallX()) {
+    playerX = prevX;
+  } else {
+    if (!jumpFrames && playerY < 760) playerY += 16;
+  }
+
+  if (checkWallX() && checkWallY() && prevY < minWallY) {
+    playerY = minWallY - playerHalfLength;
   }
 
   return drawRect(playerX, playerY, playerHalfLength * 2);
