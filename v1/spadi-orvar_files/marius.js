@@ -45,7 +45,7 @@ function drawTriangle(x, y, sideLength, direction) {
     vec2(midX + vertDiff, midY),
     vec2(midX - vertDiff, midY + vertDiff),
     vec2(midX - vertDiff, midY - vertDiff),
-  ]
+  ];
 }
 
 /**
@@ -111,8 +111,8 @@ function updateState(allVertices, allColors) {
     if (monster.x < 0 || monster.x > canvas.width) {
       monster = null;
     } else {
-      monster.draw(allVertices, allColors);
       monster.x += monster.dir * 5;
+      monster.draw(allVertices, allColors);
       if (monster.checkPlayerCollision()) {
         gameOver = true;
       }
@@ -145,7 +145,9 @@ function computeChange(allVertices, allColors) {
   allVertices.push(...playerChange());
   allColors.push(...playerColors);
 
-  allVertices.push(...drawTriangle(playerX, playerY, playerHalfLength * 2, playerDir));
+  allVertices.push(
+    ...drawTriangle(playerX, playerY, playerHalfLength * 2, playerDir),
+  );
   allColors.push(...playerPointerColors);
 
   checkScoreCollisions();
