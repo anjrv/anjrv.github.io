@@ -112,7 +112,6 @@ function updateState(allVertices, allColors) {
       monster = null;
     } else {
       monster.x += monster.dir * 5;
-      monster.draw(allVertices, allColors);
       if (monster.checkPlayerCollision()) {
         gameOver = true;
       }
@@ -163,6 +162,10 @@ function computeChange(allVertices, allColors) {
     allVertices.push(...drawRect(tile.x, tile.y, wallSize));
     allColors.push(...wallColors);
   });
+
+  if (monster) {
+    monster.draw(allVertices, allColors);
+  }
 }
 
 function render() {
