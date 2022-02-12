@@ -63,13 +63,27 @@ window.onload = function init() {
   // Me�h�ndlun �rvalykla
   window.addEventListener('keydown', function (e) {
     switch (e.keyCode) {
-      case 38: // upp �r
-        dX *= 1.1;
-        dY *= 1.1;
+      case 37:
+        dX -= 0.01;
         break;
-      case 40: // ni�ur �r
-        dX /= 1.1;
-        dY /= 1.1;
+      case 39:
+        dX += 0.01;
+        break;
+      case 38:
+        for (let i = 0; i < 8; i++) {
+          vertices[i] *= 1.05;
+        }
+
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(vertices));
+        boxRad *= 1.05;
+        break;
+      case 40:
+        for (let i = 0; i < 8; i++) {
+          vertices[i] *= 0.95;
+        }
+
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(vertices));
+        boxRad *= 0.95;
         break;
     }
   });
