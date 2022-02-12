@@ -243,5 +243,37 @@ $$
 \pagebreak
 
 ## 5. Breytið sýnisforritinu [box-bounce](https://hjalmtyr.github.io/WebGL-forrit/Angel/box-bounce.html) þannig að vinstri og hægri örvalyklarnir breyta stefnu "boltans" til vinstri og hægri.  Ef slegið er á vinstri örvalykil þá fer hann að færast aðeins meira til vinstri (lækka dX).  Sambærilegt gildir ef slegið er á hægri örvalykil.  Breytið svo virkni upp og niður örvalyklanna þannig að upp-örin stækkar boltann, en niður-örin minnkar hann (boxRad).
+\
 
 [Hlekkur](https://anjrv.github.io/hw3/box-bounce.html)
+
+**Breytingar:**
+
+```js
+window.addEventListener('keydown', function (e) {
+    switch (e.keyCode) {
+      case 37:
+        dX -= 0.01;
+        break;
+      case 39:
+        dX += 0.01;
+        break;
+      case 38:
+        for (let i = 0; i < 8; i++) {
+          vertices[i] *= 1.05;
+        }
+
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(vertices));
+        boxRad *= 1.05;
+        break;
+      case 40:
+        for (let i = 0; i < 8; i++) {
+          vertices[i] *= 0.95;
+        }
+
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(vertices));
+        boxRad *= 0.95;
+        break;
+    }
+  });
+```
