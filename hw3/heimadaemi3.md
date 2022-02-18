@@ -12,7 +12,39 @@ header-includes: |
 ## 1. Við höfum 2-víða vigurinn w sem eru táknaður við grunnvigrana v1 = [2, 1] og v2 = [-1, 2]. Táknun w við grunnvigrana tvo er a = [3, 1].  Hver væri táknun w við grunnvigrana [1, 0] og [0, 1]?
 
 \
-Fyrir vector space v1 = [1, 0] og v2 = [0, 1] væri w = [1, 1]
+Upprunaleg w = 3v1 + 1v2
+\
+$$
+\begin{bmatrix}
+6 \\
+3 \\
+\end{bmatrix}
++
+\begin{bmatrix}
+-1 \\
+2 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+5 \\
+5 \\
+\end{bmatrix}
+$$
+
+Táknun w með grunnvigrana er þá:
+$$
+5 \cdot
+\begin{bmatrix}
+1 \\
+0 \\
+\end{bmatrix}
++
+5 \cdot
+\begin{bmatrix}
+0 \\
+1 \\
+\end{bmatrix}
+$$
 
 \pagebreak
 
