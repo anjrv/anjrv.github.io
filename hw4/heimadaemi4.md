@@ -35,6 +35,32 @@ header-includes: |
 \pagebreak
 
 ## 3. Skrifið WebGL forrit sem býr til tölvuskjá.  Í okkar útgáfu af tölvuskjá er hann samsettur úr þremur teningum.  Það er skjárinn sjálfur, sem er flatur og breiður "teningur", síðan er standurinn samsettur úr tveimur teningur.  Annar þeirra er nokkur flatur og liggur á jörðinni, en hinn er eins og þykk stöng sem tengir botninn við skjáinn sjálfan.  Annars treysti ég því að þið vitið hvernig tölvuskjár lítur út!  Notandinn á að geta snúið skjánum í hringi með músinni (svipað og í [letterH](https://hjalmtyr.github.io/WebGL-forrit/Angel/letterH.html)).  Skilið skjámynd og hlekk á forritið ykkar.
+\
+
+[Hlekkur](https://anjrv.github.io/hw4/letterH.html)
+
+![Skjáskot: Tölvuskjá](tolvuskja.png){ width=50% }
+
+```js
+var mv = mat4();
+mv = mult(mv, rotateX(spinX));
+mv = mult(mv, rotateY(spinY));
+
+mv1 = mult(mv, translate(0.0, 0.0, -0.02));
+mv1 = mult(mv1, scalem(1.6, 1.0, 0.1));
+gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
+gl.drawArrays(gl.TRIANGLES, 0, numVertices);
+
+mv1 = mult(mv, translate(0.0, -0.6, 0.0));
+mv1 = mult(mv1, scalem(0.1, 0.3, 0.05));
+gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
+gl.drawArrays(gl.TRIANGLES, 0, numVertices);
+
+mv1 = mult(mv, translate(0.0, -0.8, -0.05));
+mv1 = mult(mv1, scalem(0.8, 0.1, 0.5));
+gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
+gl.drawArrays(gl.TRIANGLES, 0, numVertices);
+```
 
 \pagebreak
 
@@ -42,9 +68,45 @@ header-includes: |
 
 ![Snúningsvegasalt](4.png)
 
+\
+
+[Hlekkur](https://anjrv.github.io/hw4/seesaw.html)
+
+![Skjáskot: Snúningsvegasalt](seesaw.png){ width=50% }
+
 \pagebreak
 
 ## 5. Hér sýnisforritið [solkerfi-tungl](https://hjalmtyr.github.io/WebGL-forrit/Angel/solkerfi-tungl.html) sem hermir sólin, jörðina og tunglið.  Þið eigið að bæta við gervihnetti sem snýst um tunglið.  Tunglið snýst um jörðina í sama fleti og jörðin snýst um sóluna, en gervihnötturinn fer yfir póla tunglsins og hallar því 90° miðað við hinar sporbrautirnar.  Bætið einnig við þeim eiginleika að upp/niður örvalyklarnir auka/minnka hraða hermunarinnar.  Skilið skjáskoti og hlekk á forritið ykkar.
+\
+
+[Hlekkur](https://anjrv.github.io/hw4/solkerfi-tungl.html)
+
+![Skjáskot: Gervihnetti](asteroid.png){ width=40% }
+
+```js
+window.addEventListener('keydown', function (e) {
+  switch (e.keyCode) {
+    case 38: // Up
+      rotDayInc *= 1.05;
+      rotYearInc *= 1.05;
+      break;
+    case 40: // Down
+      rotDayInc *= 0.95;
+      rotYearInc *= 0.95;
+      break;
+  }
+});
+
+rotDay += rotDayInc;
+rotYear += rotYearInc;
+
+// teikna "gervihnetti"
+var mvt = mult(mvt, rotateZ(30.0 * rotYear * 2));
+mvt = mult(mvt, translate(1.8, 0.0, 0.0));
+mvt = mult(mvt, scalem(0.5, 0.5, 0.5));
+gl.uniformMatrix4fv(matrixLoc, false, flatten(mvt));
+gl.drawArrays(gl.TRIANGLES, 0, numVertices);
+```
 
 
 
