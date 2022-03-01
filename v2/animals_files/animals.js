@@ -1,32 +1,35 @@
-var canvas;
-var gl;
+let canvas;
+let gl;
 
-var NumVertices = 36;
+let cBuffer;
+let avBuffer;
+let acBuffer;
 
-var points = [];
-var colors = [];
+let vColor;
+let vPosition;
 
-var vBuffer;
-var cBuffer;
-var avBuffer;
-var acBuffer;
+let movement = false; // Do we rotate?
+let spinX = 0;
+let spinY = 0;
+let origX;
+let origY;
 
-var vColor;
-var vPosition;
+let zDist = -4.0;
 
-var movement = false; // Do we rotate?
-var spinX = 0;
-var spinY = 0;
-var origX;
-var origY;
+let proLoc;
+let mvLoc;
 
-var zDist = -4.0;
+let gridQuant = 10; // Starting amount of grid tiles
+let startingSheep = 2;
+let startingWolves = 1;
 
-var proLoc;
-var mvLoc;
+const NumVertices = 36;
+const points = [];
+const colors = [];
+const halfWorldDimension = 0.9;
 
 // World grid line definitions
-var axes = [
+const worldLines = [
   [-0.9, -0.9, 0.9], //1
   [-0.9, 0.9, 0.9], //2
   [-0.9, -0.9, 0.9], //1
@@ -54,7 +57,7 @@ var axes = [
 ];
 
 // World grid black for line connections
-var axes_colors = [
+const worldLineColors = [
   [0.0, 0.0, 0.0, 1.0],
   [0.0, 0.0, 0.0, 1.0],
   [0.0, 0.0, 0.0, 1.0],
@@ -92,7 +95,7 @@ window.onload = function init() {
   colorCube();
 
   gl.viewport(0, 0, canvas.width, canvas.height);
-  gl.clearColor(0.8, 1.0, 1.0, 1.0);
+  gl.clearColor(0.8, 0.8, 1.0, 1.0);
   gl.enable(gl.DEPTH_TEST);
   gl.frontFace(gl.CCW);
   gl.enable(gl.CULL_FACE);
@@ -101,12 +104,12 @@ window.onload = function init() {
   //
   //  Load shaders and initialize attribute buffers
   //
-  var program = initShaders(gl, 'vertex-shader', 'fragment-shader');
+  let program = initShaders(gl, 'vertex-shader', 'fragment-shader');
   gl.useProgram(program);
 
   cBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, 1024, gl.STATIC_DRAW);
 
   vColor = gl.getAttribLocation(program, 'vColor');
   gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
@@ -122,18 +125,18 @@ window.onload = function init() {
 
   acBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, acBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, flatten(axes_colors), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, flatten(worldLineColors), gl.STATIC_DRAW);
 
   avBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, avBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, flatten(axes), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, flatten(worldLines), gl.STATIC_DRAW);
 
   gl.lineWidth(3.0);
 
   proLoc = gl.getUniformLocation(program, 'projection');
   mvLoc = gl.getUniformLocation(program, 'modelview');
 
-  var proj = perspective(50.0, 1.0, 0.05, 100.0);
+  let proj = perspective(50.0, 1.0, 0.05, 100.0);
   gl.uniformMatrix4fv(proLoc, false, flatten(proj));
 
   //event listeners for mouse
@@ -157,6 +160,23 @@ window.onload = function init() {
     }
   });
 
+  let i = 0;
+  while (i < startingSheep + startingWolves) {
+    const x = util.randRange(-halfWorldDimension, halfWorldDimension);
+    const y = util.randRange(-halfWorldDimension, halfWorldDimension);
+    const z = util.randRange(-halfWorldDimension, halfWorldDimension);
+
+    if (!simulationState.grid[`${x},${y},${z}`]) {
+      if (i < startingSheep) {
+        simulationState.spawnSheep(x, y, z);
+      } else {
+        simulationState.spawnWolf(x, y, z);
+      }
+
+      i++;
+    }
+  }
+
   render();
 };
 
@@ -171,7 +191,7 @@ function colorCube() {
 
 // Small origin cube
 function quad(a, b, c, d) {
-  var vertices = [
+  const vertices = [
     vec3(-0.05, -0.05, 0.05),
     vec3(-0.05, 0.05, 0.05),
     vec3(0.05, 0.05, 0.05),
@@ -182,38 +202,23 @@ function quad(a, b, c, d) {
     vec3(0.05, -0.05, -0.05),
   ];
 
-  var vertexColors = [
-    [0.0, 0.0, 0.0, 1.0], // black
-    [1.0, 0.0, 0.0, 1.0], // red
-    [1.0, 1.0, 0.0, 1.0], // yellow
-    [0.0, 1.0, 0.0, 1.0], // green
-    [0.0, 0.0, 1.0, 1.0], // blue
-    [1.0, 0.0, 1.0, 1.0], // magenta
-    [0.0, 1.0, 1.0, 1.0], // cyan
-    [1.0, 1.0, 1.0, 1.0], // white
-  ];
+  const indices = [a, b, c, a, c, d];
 
-  // We need to parition the quad into two triangles in order for
-  // WebGL to be able to render it.  In this case, we create two
-  // triangles from the quad indices
-
-  //vertex color assigned by the index of the vertex
-
-  var indices = [a, b, c, a, c, d];
-
-  for (var i = 0; i < indices.length; ++i) {
+  for (let i = 0; i < indices.length; ++i) {
     points.push(vertices[indices[i]]);
-    //colors.push( vertexColors[indices[i]] );
-
-    // for solid colored faces use
-    colors.push(vertexColors[a]);
   }
+}
+
+function swapColor(color) {
+  gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
+  gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
+  gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(color));
 }
 
 function render() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  var ctm = lookAt(
+  let ctm = lookAt(
     vec3(0.0, 0.0, zDist),
     vec3(0.0, 0.0, 0.0),
     vec3(0.0, 1.0, 0.0),
@@ -221,15 +226,31 @@ function render() {
   ctm = mult(ctm, rotateX(spinX));
   ctm = mult(ctm, rotateY(spinY));
 
-  // Draw animals - TODO: For loop with translation
-  ctm1 = mult( ctm, translate( 0.0, 0.0, 0.0 ) );
+  swapColor(sheepColors);
 
-  gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-  gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
-  gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-  gl.vertexAttribPointer(vPosition, 3, gl.FLOAT, false, 0, 0);
-  gl.uniformMatrix4fv(mvLoc, false, flatten(ctm1));
-  gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
+  for (let i = 0; i < simulationState.sheep.length; i++) {
+    const currLoc = simulationState.sheep[i].getPos();
+    ctm1 = mult(ctm, translate(currLoc.cx, currLoc.cy, currLoc.cz));
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
+    gl.vertexAttribPointer(vPosition, 3, gl.FLOAT, false, 0, 0);
+    gl.uniformMatrix4fv(mvLoc, false, flatten(ctm1));
+    gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
+  }
+
+  swapColor(wolfColors);
+
+  for (let i = 0; i < simulationState.wolves.length; i++) {
+    const currLoc = simulationState.wolves[i].getPos();
+    ctm1 = mult(ctm, translate(currLoc.cx, currLoc.cy, currLoc.cz));
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
+    gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
+    gl.vertexAttribPointer(vPosition, 3, gl.FLOAT, false, 0, 0);
+    gl.uniformMatrix4fv(mvLoc, false, flatten(ctm1));
+    gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
+  }
 
   // Draw world grid ( Use retained origin )
   gl.bindBuffer(gl.ARRAY_BUFFER, acBuffer);
