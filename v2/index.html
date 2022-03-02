@@ -1,7 +1,9 @@
 <html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <script id="vertex-shader" type="x-shader/x-vertex">
+
+<head>
+  <link rel="stylesheet" type="text/css" href="styles.css" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <script id="vertex-shader" type="x-shader/x-vertex">
 
       attribute  vec4 vPosition;
       attribute  vec4 vColor;
@@ -17,7 +19,7 @@
       }
     </script>
 
-    <script id="fragment-shader" type="x-shader/x-fragment">
+  <script id="fragment-shader" type="x-shader/x-fragment">
 
       precision mediump float;
 
@@ -29,18 +31,109 @@
           gl_FragColor = fColor;
       }
     </script>
-  </head>
-  <body>
-    <canvas id="gl-canvas" width="1024" height="1024"> </canvas>
+</head>
 
-    <script type="text/javascript" src="animals_files/webgl-utils.js"></script>
-    <script type="text/javascript" src="animals_files/initShaders.js"></script>
-    <script type="text/javascript" src="animals_files/MV.js"></script>
-    <script type="text/javascript" src="animals_files/utils.js"></script>
-    <script type="text/javascript" src="animals_files/animals.js"></script>
-    <script type="text/javascript" src="animals_files/Animal.js"></script>
-    <script type="text/javascript" src="animals_files/Wolf.js"></script>
-    <script type="text/javascript" src="animals_files/Sheep.js"></script>
-    <script type="text/javascript" src="animals_files/simulationState.js"></script>
-  </body>
+<body>
+  <canvas id="gl-canvas" width="1024" height="1024"> </canvas>
+  <div class="controls">
+    <span>Global speed multi 1 - 10:</span>
+    <div class="slidecontainer">
+      <input type="range" min="1" max="10" value="1" class="slider" id="globalSpeed" />
+    </div>
+
+    </br>
+
+    <span>Sheep speed multi 1 - 10:</span>
+    <div class="slidecontainer">
+      <input type="range" min="1" max="10" value="1" class="slider" id="sSpeed" />
+    </div>
+
+    </br>
+
+    <span>Sheep birth speed 1 - 10:</span>
+    <div class="slidecontainer">
+      <input type="range" min="1" max="10" value="5" class="slider" id="sbSpeed" />
+    </div>
+
+    </br>
+
+    <span>Panic range 1 - 10:</span>
+    <div class="slidecontainer">
+      <input type="range" min="1" max="10" value="2" class="slider" id="sPanic" />
+    </div>
+
+    </br>
+
+    <span>Wolf speed multi 1 - 10:</span>
+    <div class="slidecontainer">
+      <input type="range" min="1" max="10" value="1" class="slider" id="wSpeed" />
+    </div>
+
+    </br>
+
+    <span>Wolf birth speed 1 - 10:</span>
+    <div class="slidecontainer">
+      <input type="range" min="1" max="10" value="3" class="slider" id="wbSpeed" />
+    </div>
+
+    </br>
+
+    <span>Aggro range 1 - 100:</span>
+    <div class="slidecontainer">
+      <input type="range" min="1" max="100" value="3" class="slider" id="wAggro" />
+    </div>
+
+    </br>
+
+    <label for="collision">Collision: </label>
+    <input type="checkbox" id="collision" name="collision" value=true checked>
+
+    </br>
+    </br>
+
+    <span>Sizing options:</span>
+</br>
+
+    <span>(These require reload)</span>
+    <button class="reload" onClick="window.location.reload();">Reload</button>
+
+    </br>
+    </br>
+
+    <span>Grid size 10 - 1000:</span>
+    <div class="slidecontainer">
+      <input type="range" min="10" max="1000" value="10" step="10" class="slider" id="wSpeed" />
+    </div>
+
+    </br>
+
+    <span>Starting sheep 1 - 1000:</span>
+    <div class="slidecontainer">
+      <input type="range" min="1" max="1000" value="10" class="slider" id="wSpeed" />
+    </div>
+
+    </br>
+
+    <span>Starting wolves 1 - 1000:</span>
+    <div class="slidecontainer">
+      <input type="range" min="1" max="1000" value="2" class="slider" id="wSpeed" />
+    </div>
+
+    </br>
+
+    <p>NOTE: Animal quantity will be clamped to fit.</p>
+
+  </div>
+
+  <script type="text/javascript" src="animals_files/webgl-utils.js"></script>
+  <script type="text/javascript" src="animals_files/initShaders.js"></script>
+  <script type="text/javascript" src="animals_files/MV.js"></script>
+  <script type="text/javascript" src="animals_files/utils.js"></script>
+  <script type="text/javascript" src="animals_files/animals.js"></script>
+  <script type="text/javascript" src="animals_files/Animal.js"></script>
+  <script type="text/javascript" src="animals_files/Wolf.js"></script>
+  <script type="text/javascript" src="animals_files/Sheep.js"></script>
+  <script type="text/javascript" src="animals_files/simulationState.js"></script>
+</body>
+
 </html>

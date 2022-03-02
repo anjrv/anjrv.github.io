@@ -42,3 +42,13 @@ function Wolf(attrib) {
 }
 
 Wolf.prototype = new Animal();
+Wolf.isSheep = false;
+
+Wolf.prototype.update = function(m = 1) {
+  if (Math.random() > 0.995 || this.dir === 0) {
+    // Change direction
+    this.dir = util.randIntRange(1, 6);
+  }
+
+  this.move(m, wolfSpeed);
+}

@@ -19,14 +19,32 @@ let zDist = -4.0;
 let proLoc;
 let mvLoc;
 
-let gridQuant = 10; // Starting amount of grid tiles
-let startingSheep = 2;
-let startingWolves = 1;
+// Slider values
+let speedMultiplier = 1;
+let sheepSpeedMultiplier = 1;
+let sheepBirthSpeed = 5;
+let sheepPanicRange = 2;
 
+let wolfSpeedMultiplier = 1;
+let wolfBirthSpeed = 3;
+let wolfAggroRange = 3;
+
+let collision = true;
+
+let gridQuant = 20;
+let startingSheep = 10;
+let startingWolves = 2;
+
+// Some constants
 const NumVertices = 36;
 const points = [];
 const colors = [];
 const halfWorldDimension = 0.9;
+const fps = 60;
+const sheepSpeed = 0.005;
+const wolfSpeed = 0.005;
+const baseGridQuant = 10;
+const storage = window.sessionStorage;
 
 // World grid line definitions
 const worldLines = [
@@ -136,7 +154,7 @@ window.onload = function init() {
   proLoc = gl.getUniformLocation(program, 'projection');
   mvLoc = gl.getUniformLocation(program, 'modelview');
 
-  let proj = perspective(50.0, 1.0, 0.05, 100.0);
+  let proj = perspective(50.0, 1.0, 0.09, 100.0);
   gl.uniformMatrix4fv(proLoc, false, flatten(proj));
 
   //event listeners for mouse
@@ -161,12 +179,19 @@ window.onload = function init() {
   });
 
   let i = 0;
-  while (i < startingSheep + startingWolves) {
-    const x = util.randRange(-halfWorldDimension, halfWorldDimension);
-    const y = util.randRange(-halfWorldDimension, halfWorldDimension);
-    const z = util.randRange(-halfWorldDimension, halfWorldDimension);
+  const tiles = gridQuant * gridQuant * gridQuant;
+  while (i < tiles && i < startingSheep + startingWolves) {
+    const x = util.randRange(-bound, bound);
+    const y = util.randRange(-bound, bound);
+    const z = util.randRange(-bound, bound);
 
-    if (!simulationState.grid[`${x},${y},${z}`]) {
+    if (
+      !simulationState.grid[
+        `${Math.floor((x + bound) * idxModifier)},${Math.floor(
+          (y + bound) * idxModifier,
+        )},${Math.floor((x + bound) * idxModifier)}`
+      ]
+    ) {
       if (i < startingSheep) {
         simulationState.spawnSheep(x, y, z);
       } else {
@@ -176,6 +201,10 @@ window.onload = function init() {
       i++;
     }
   }
+
+  document.getElementById('globalSpeed').onchange = function (event) {
+
+  };
 
   render();
 };
@@ -192,14 +221,14 @@ function colorCube() {
 // Small origin cube
 function quad(a, b, c, d) {
   const vertices = [
-    vec3(-0.05, -0.05, 0.05),
-    vec3(-0.05, 0.05, 0.05),
-    vec3(0.05, 0.05, 0.05),
-    vec3(0.05, -0.05, 0.05),
-    vec3(-0.05, -0.05, -0.05),
-    vec3(-0.05, 0.05, -0.05),
-    vec3(0.05, 0.05, -0.05),
-    vec3(0.05, -0.05, -0.05),
+    vec3(-0.09, -0.09, 0.09),
+    vec3(-0.09, 0.09, 0.09),
+    vec3(0.09, 0.09, 0.09),
+    vec3(0.09, -0.09, 0.09),
+    vec3(-0.09, -0.09, -0.09),
+    vec3(-0.09, 0.09, -0.09),
+    vec3(0.09, 0.09, -0.09),
+    vec3(0.09, -0.09, -0.09),
   ];
 
   const indices = [a, b, c, a, c, d];
@@ -216,49 +245,29 @@ function swapColor(color) {
 }
 
 function render() {
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  setTimeout(() => {
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  let ctm = lookAt(
-    vec3(0.0, 0.0, zDist),
-    vec3(0.0, 0.0, 0.0),
-    vec3(0.0, 1.0, 0.0),
-  );
-  ctm = mult(ctm, rotateX(spinX));
-  ctm = mult(ctm, rotateY(spinY));
+    let ctm = lookAt(
+      vec3(0.0, 0.0, zDist),
+      vec3(0.0, 0.0, 0.0),
+      vec3(0.0, 1.0, 0.0),
+    );
+    ctm = mult(ctm, rotateX(spinX));
+    ctm = mult(ctm, rotateY(spinY));
 
-  swapColor(sheepColors);
+    // Move animals and then draw
+    simulationState.updateAnimals(speedMultiplier);
+    simulationState.drawAnimals(ctm);
 
-  for (let i = 0; i < simulationState.sheep.length; i++) {
-    const currLoc = simulationState.sheep[i].getPos();
-    ctm1 = mult(ctm, translate(currLoc.cx, currLoc.cy, currLoc.cz));
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-    gl.vertexAttribPointer(vPosition, 3, gl.FLOAT, false, 0, 0);
-    gl.uniformMatrix4fv(mvLoc, false, flatten(ctm1));
-    gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
-  }
-
-  swapColor(wolfColors);
-
-  for (let i = 0; i < simulationState.wolves.length; i++) {
-    const currLoc = simulationState.wolves[i].getPos();
-    ctm1 = mult(ctm, translate(currLoc.cx, currLoc.cy, currLoc.cz));
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
+    // Draw world grid ( Use retained origin )
+    gl.bindBuffer(gl.ARRAY_BUFFER, acBuffer);
     gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
-    gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, avBuffer);
     gl.vertexAttribPointer(vPosition, 3, gl.FLOAT, false, 0, 0);
-    gl.uniformMatrix4fv(mvLoc, false, flatten(ctm1));
-    gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
-  }
+    gl.uniformMatrix4fv(mvLoc, false, flatten(ctm));
+    gl.drawArrays(gl.LINES, 0, 24);
 
-  // Draw world grid ( Use retained origin )
-  gl.bindBuffer(gl.ARRAY_BUFFER, acBuffer);
-  gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
-  gl.bindBuffer(gl.ARRAY_BUFFER, avBuffer);
-  gl.vertexAttribPointer(vPosition, 3, gl.FLOAT, false, 0, 0);
-  gl.uniformMatrix4fv(mvLoc, false, flatten(ctm));
-  gl.drawArrays(gl.LINES, 0, 24);
-
-  requestAnimFrame(render);
+    requestAnimFrame(render);
+  }, 1000 / fps);
 }

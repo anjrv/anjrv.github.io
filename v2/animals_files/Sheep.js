@@ -42,3 +42,13 @@ function Sheep(attrib) {
 }
 
 Sheep.prototype = new Animal();
+Sheep.isSheep = true;
+
+Sheep.prototype.update = function (m = 1) {
+  if (Math.random() > 0.995 || this.dir === 0) {
+    // Change direction
+    this.dir = util.randIntRange(1, 6);
+  }
+
+  this.move(m, sheepSpeed);
+};
