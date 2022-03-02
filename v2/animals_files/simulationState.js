@@ -1,7 +1,3 @@
-const scaleModifier = gridQuant / baseGridQuant;
-const bound = halfWorldDimension * scaleModifier;
-const idxModifier = 10 / 1.8;
-
 const simulationState = {
   currId: 0,
   sheep: [],
