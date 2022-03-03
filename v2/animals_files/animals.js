@@ -29,8 +29,6 @@ let wolfSpeedMultiplier = 1;
 let wolfBirthSpeed = 3;
 let wolfAggroRange = 3;
 
-let collision = true;
-
 let gridQuant = 10;
 let startingSheep = 10;
 let startingWolves = 2;
@@ -128,9 +126,6 @@ function loadState() {
   if (sessionStorage.getItem('wolfAggroRange'))
     wolfAggroRange = sessionStorage.getItem('wolfAggroRange');
 
-  if (sessionStorage.getItem('collision'))
-    collision = JSON.parse(sessionStorage.getItem('collision'));
-
   if (sessionStorage.getItem('gridQuant'))
     gridQuant = sessionStorage.getItem('gridQuant');
 
@@ -139,6 +134,40 @@ function loadState() {
 
   if (sessionStorage.getItem('startingWolves'))
     startingWolves = sessionStorage.getItem('startingWolves');
+}
+
+function spawn(sheep) {
+  const tiles = gridQuant * gridQuant * gridQuant;
+  const halfTileSize = (1.8 * scaleModifier) / gridQuant / 2;
+
+  if (simulationState.wolves.length + simulationState.sheep.length < tiles) {
+    let x = util.randIntRange(0, gridQuant - 1);
+    let y = util.randIntRange(0, gridQuant - 1);
+    let z = util.randIntRange(0, gridQuant - 1);
+
+    while (true) {
+      if (!simulationState.grid[`${x},${y},${z}`]) {
+        if (sheep)
+          simulationState.spawnSheep(
+            x * (halfTileSize * 2) + halfTileSize - 0.9 * scaleModifier,
+            y * (halfTileSize * 2) + halfTileSize - 0.9 * scaleModifier,
+            z * (halfTileSize * 2) + halfTileSize - 0.9 * scaleModifier,
+          );
+        else
+          simulationState.spawnWolf(
+            x * (halfTileSize * 2) + halfTileSize - 0.9 * scaleModifier,
+            y * (halfTileSize * 2) + halfTileSize - 0.9 * scaleModifier,
+            z * (halfTileSize * 2) + halfTileSize - 0.9 * scaleModifier,
+          );
+
+        break;
+      } else {
+        x = util.randIntRange(0, gridQuant - 1);
+        y = util.randIntRange(0, gridQuant - 1);
+        z = util.randIntRange(0, gridQuant - 1);
+      }
+    }
+  }
 }
 
 window.onload = function init() {
@@ -158,7 +187,6 @@ window.onload = function init() {
   const inputWolfSpeedMultiplier = document.getElementById('wSpeed');
   const inputWolfBirthSpeed = document.getElementById('wbSpeed');
   const inputWolfAggroRange = document.getElementById('wAggro');
-  const inputCollision = document.getElementById('collision');
   const inputGridQuant = document.getElementById('gSize');
   const inputStartingSheep = document.getElementById('startSheep');
   const inputStartingWolves = document.getElementById('startWolf');
@@ -170,7 +198,6 @@ window.onload = function init() {
   inputWolfSpeedMultiplier.value = wolfSpeedMultiplier;
   inputWolfBirthSpeed.value = wolfBirthSpeed;
   inputWolfAggroRange.value = wolfAggroRange;
-  inputCollision.checked = collision;
   inputGridQuant.value = gridQuant;
   inputStartingSheep.value = startingSheep;
   inputStartingWolves.value = startingWolves;
@@ -247,36 +274,15 @@ window.onload = function init() {
 
   let i = 0;
   const tiles = gridQuant * gridQuant * gridQuant;
-  const halfTileSize = 1.8 / gridQuant / 2;
-  while (i < tiles && i < startingSheep) {
-    const x = util.randIntRange(0, gridQuant - 1);
-    const y = util.randIntRange(0, gridQuant - 1);
-    const z = util.randIntRange(0, gridQuant - 1);
-
-    if (!simulationState.grid[`${x},${y},${z}`]) {
-      simulationState.spawnSheep(
-        x * (halfTileSize * 2) + halfTileSize - 0.9,
-        y * (halfTileSize * 2) + halfTileSize - 0.9,
-        z * (halfTileSize * 2) + halfTileSize - 0.9,
-      );
-      i++;
-    }
+  while (i < tiles && i <= startingSheep) {
+    spawn(true);
+    i++;
   }
 
   i = 0;
-  while (i < tiles && i < startingWolves) {
-    const x = util.randIntRange(0, gridQuant - 1);
-    const y = util.randIntRange(0, gridQuant - 1);
-    const z = util.randIntRange(0, gridQuant - 1);
-
-    if (!simulationState.grid[`${x},${y},${z}`]) {
-      simulationState.spawnWolf(
-        x * (halfTileSize * 2) + halfTileSize - 0.9,
-        y * (halfTileSize * 2) + halfTileSize - 0.9,
-        z * (halfTileSize * 2) + halfTileSize - 0.9,
-      );
-      i++;
-    }
+  while (i < tiles && i <= startingWolves) {
+    spawn(false);
+    i++;
   }
 
   document.getElementById('globalSpeed').onchange = function (event) {
@@ -314,11 +320,6 @@ window.onload = function init() {
     sessionStorage.setItem('wolfAggroRange', wolfAggroRange);
   };
 
-  document.getElementById('collision').onchange = function (event) {
-    collision = event.target.checked;
-    sessionStorage.setItem('collision', collision);
-  };
-
   document.getElementById('gSize').onchange = function (event) {
     sessionStorage.setItem('gridQuant', event.target.value);
   };
@@ -329,6 +330,14 @@ window.onload = function init() {
 
   document.getElementById('startWolf').onchange = function (event) {
     sessionStorage.setItem('startingWolves', event.target.value);
+  };
+
+  document.getElementById('spawnSheep').onclick = function () {
+    spawn(true);
+  };
+
+  document.getElementById('spawnWolf').onclick = function () {
+    spawn(false);
   };
 
   render();
@@ -346,14 +355,14 @@ function colorCube() {
 // Small origin cube
 function quad(a, b, c, d) {
   const vertices = [
-    vec3(-0.09, -0.09, 0.09),
-    vec3(-0.09, 0.09, 0.09),
-    vec3(0.09, 0.09, 0.09),
-    vec3(0.09, -0.09, 0.09),
-    vec3(-0.09, -0.09, -0.09),
-    vec3(-0.09, 0.09, -0.09),
-    vec3(0.09, 0.09, -0.09),
-    vec3(0.09, -0.09, -0.09),
+    vec3(-0.0675, -0.0675, 0.0675),
+    vec3(-0.0675, 0.0675, 0.0675),
+    vec3(0.0675, 0.0675, 0.0675),
+    vec3(0.0675, -0.0675, 0.0675),
+    vec3(-0.0675, -0.0675, -0.0675),
+    vec3(-0.0675, 0.0675, -0.0675),
+    vec3(0.0675, 0.0675, -0.0675),
+    vec3(0.0675, -0.0675, -0.0675),
   ];
 
   const indices = [a, b, c, a, c, d];

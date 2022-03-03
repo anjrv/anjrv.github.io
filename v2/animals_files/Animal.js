@@ -8,18 +8,31 @@ Animal.prototype.setup = function (attrib) {
   }
 };
 
-Animal.prototype.setPos = function (cx, cy, cz) {
-  this.cx = cx;
-  this.cy = cy;
-  this.cz = cz;
-};
-
 Animal.prototype.getPos = function () {
   return { cx: this.cx, cy: this.cy, cz: this.cz };
 };
 
-Animal.prototype.getId = function () {
-  return this.id;
+Animal.prototype.getAdjacents = function () {
+  return [
+    simulationState.grid[
+      `${(this.xIdx + 1) % gridQuant},${this.yIdx},${this.zIdx}`
+    ], // Left
+    simulationState.grid[
+      `${(this.xIdx - 1) % gridQuant},${this.yIdx},${this.zIdx}`
+    ], // Right
+    simulationState.grid[
+      `${this.xIdx},${(this.yIdx + 1) % gridQuant},${this.zIdx}`
+    ], // Up
+    simulationState.grid[
+      `${this.xIdx},${(this.yIdx - 1) % gridQuant},${this.zIdx}`
+    ], // Down
+    simulationState.grid[
+      `${this.xIdx},${this.yIdx},${(this.zIdx + 1) % gridQuant}`
+    ], // Back
+    simulationState.grid[
+      `${this.xIdx},${this.yIdx},${(this.zIdx - 1) % gridQuant}`
+    ], // Forward
+  ];
 };
 
 Animal.prototype.move = function (m = 1, speed) {

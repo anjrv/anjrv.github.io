@@ -1,52 +1,87 @@
 const simulationState = {
-  currId: 0,
   sheep: [],
   wolves: [],
   grid: new Object(), // Use hashtable 'x,y,z' key format instead of 3D array
 
   spawnSheep: function (cx, cy, cz) {
+    if (
+      this.sheep.length + this.wolves.length >=
+      gridQuant * gridQuant * gridQuant
+    )
+      return;
+
     const s = new Sheep({
-      id: this.currId,
       cx: cx,
       cy: cy,
       cz: cz,
       xIdx: Math.floor((cx + bound) * idxModifier),
       yIdx: Math.floor((cy + bound) * idxModifier),
       zIdx: Math.floor((cz + bound) * idxModifier),
+      isSheep: true,
       dir: util.randIntRange(1, 6),
+      birthTimer: util.randIntRange(0, 1000), // Randomize so its not completely synced
+      isDead: false,
     });
 
     this.sheep.push(s);
     this.grid[`${s.xIdx},${s.yIdx},${s.zIdx}`] = s;
-    this.currId++;
   },
 
   spawnWolf: function (cx, cy, cz) {
+    if (
+      this.sheep.length + this.wolves.length >=
+      gridQuant * gridQuant * gridQuant
+    )
+      return;
+
     const w = new Wolf({
-      id: this.currId,
       cx: cx,
       cy: cy,
       cz: cz,
       xIdx: Math.floor((cx + bound) * idxModifier),
       yIdx: Math.floor((cy + bound) * idxModifier),
       zIdx: Math.floor((cz + bound) * idxModifier),
+      isSheep: false,
       dir: util.randIntRange(1, 6),
+      nextBirth: 10,
+      starvation: 2000,
+      isDead: false,
     });
 
     this.wolves.push(w);
     this.grid[`${w.xIdx},${w.yIdx},${w.zIdx}`] = w;
-    this.currId++;
   },
 
   updateAnimals: function (m = 1) {
-    // console.log(this.grid);
-    for (let i = 0; i < simulationState.sheep.length; i++) {
-      simulationState.sheep[i].update(m);
+    for (let i = this.sheep.length - 1; i >= 0; i--) {
+      if (this.sheep[i].isDead) {
+        delete this.grid[
+          `${this.sheep[i].xIdx},${this.sheep[i].yIdx},${this.sheep[i].zIdx}`
+        ];
+        this.sheep.splice(i, 1);
+      } else this.sheep[i].update(m);
     }
 
-    for (let i = 0; i < simulationState.wolves.length; i++) {
-      simulationState.wolves[i].update(m);
+    for (let i = this.wolves.length - 1; i >= 0; i--) {
+      if (this.wolves[i].isDead) {
+        delete this.grid[
+          `${this.wolves[i].xIdx},${this.wolves[i].yIdx},${this.wolves[i].zIdx}`
+        ];
+        this.wolves.splice(i, 1);
+      } else this.wolves[i].update(m);
     }
+
+    //if (sheepDied) {
+    //  for (let i = this.sheep.length; i >= 0; i--) {
+    //    if (this.sheep[i].isDead) this.sheep.splice(i, 1);
+    //  }
+    //}
+
+    //if (wolfDied) {
+    //  for (let i = this.wolves.length; i >= 0; i--) {
+    //    if (this.wolves[i].isDead) this.wolves.splice(i, 1);
+    //  }
+    //}
   },
 
   drawAnimals: function (ctm) {
@@ -63,7 +98,7 @@ const simulationState = {
 
     for (let i = 0; i < simulationState.sheep.length; i++) {
       const currLoc = simulationState.sheep[i].getPos();
-      ctm1 = mult(ctm, translate(currLoc.cx, currLoc.cy, currLoc.cz));
+      const ctm1 = mult(ctm, translate(currLoc.cx, currLoc.cy, currLoc.cz));
 
       gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
       gl.vertexAttribPointer(vPosition, 3, gl.FLOAT, false, 0, 0);
@@ -75,7 +110,7 @@ const simulationState = {
 
     for (let i = 0; i < simulationState.wolves.length; i++) {
       const currLoc = simulationState.wolves[i].getPos();
-      ctm1 = mult(ctm, translate(currLoc.cx, currLoc.cy, currLoc.cz));
+      const ctm1 = mult(ctm, translate(currLoc.cx, currLoc.cy, currLoc.cz));
 
       gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
       gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);

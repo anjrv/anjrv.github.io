@@ -57,66 +57,65 @@
 
     </br>
 
-    <span>Panic range 1 - 10:</span>
+    <span>Panic range 1 - 5:</span>
     <div class="slidecontainer">
-      <input type="range" min="1" max="10" value="2" class="slider" id="sPanic" />
+      <input type="range" min="1" max="5" value="3" class="slider" id="sPanic" />
     </div>
 
     </br>
 
     <span>Wolf speed multi 1 - 10:</span>
     <div class="slidecontainer">
-      <input type="range" min="1" max="10" value="1" class="slider" id="wSpeed" />
+      <input type="range" min="1" max="10" value="5" class="slider" id="wSpeed" />
     </div>
 
     </br>
 
-    <span>Wolf birth speed 1 - 10:</span>
+    <span>Wolf food multi 1 - 10:</span>
     <div class="slidecontainer">
-      <input type="range" min="1" max="10" value="3" class="slider" id="wbSpeed" />
+      <input type="range" min="1" max="10" value="5" class="slider" id="wbSpeed" />
     </div>
 
     </br>
 
     <span>Aggro range 1 - 100:</span>
     <div class="slidecontainer">
-      <input type="range" min="1" max="100" value="3" class="slider" id="wAggro" />
+      <input type="range" min="1" max="100" value="100" class="slider" id="wAggro" />
     </div>
 
-    </br>
+    <button class="btn" id="spawnSheep">Spawn Sheep</button>
 
-    <label for="collision">Collision: </label>
-    <input type="checkbox" id="collision" name="collision" value=true checked>
+    <button class="btn" id="spawnWolf">Spawn Wolf</button>
 
     </br>
     </br>
 
     <span>Sizing options:</span>
-</br>
+    </br>
 
     <span>(These require reload)</span>
-    <button class="reload" onClick="window.location.reload();">Reload</button>
+    <button class="btn" onClick="window.location.reload();">Reload</button>
 
     </br>
     </br>
 
     <span>Grid size 10 - 100:</span>
     <div class="slidecontainer">
-      <input type="range" min="10" max="100" value="10" step="10" class="slider" id="gSize" />
+      <input type="range" min="10" max="100" value="40" step="10" class="slider" id="gSize" />
     </div>
 
     </br>
 
     <span>Starting sheep 1 - 400:</span>
     <div class="slidecontainer">
-      <input type="range" min="1" max="400" value="10" class="slider" id="startSheep" />
+      <input type="range" min="1" max="400" value="40" class="slider" id="startSheep" />
     </div>
 
     </br>
 
     <span>Starting wolves 1 - 400:</span>
     <div class="slidecontainer">
-      <input type="range" min="1" max="400" value="2" class="slider" id="startWolf" />
+      <input type="range" min="1" max="400" value="3" class="slider" id="startWolf" />
     </div>
   </div>
 

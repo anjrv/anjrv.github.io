@@ -142,13 +142,8 @@ function render()
     var mv = mat4();
     
     mv = mult( mv, translate( -0.25, 0.05, 0.05 ) );
-
-    //mv = mult( mv, rotateX( -30.0 ) );
     mv = mult( mv, rotateY( 270 ) );
-
     mv = mult( mv, scalem( 1/3, 1/3, 1/3 ) );
-
-
     mv = mult( mv, translate( 0.25, -0.05, -0.05) );
 
     gl.uniformMatrix4fv(matrixLoc, false, flatten(mv));
