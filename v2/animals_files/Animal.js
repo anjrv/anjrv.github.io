@@ -23,7 +23,7 @@ Animal.prototype.getId = function () {
 };
 
 Animal.prototype.move = function (m = 1, speed) {
-  let nextX, nextY, nextZ, nextXIdx, nextYIdx, nextZIdx;
+  let nextX, nextY, nextZ, nextXIdx, nextYIdx, nextZIdx, oldIdx;
   const halfTileSize = 1.8 / gridQuant / 2;
   const scaleModifier = gridQuant / baseGridQuant;
   const lowerBound = -0.9 * scaleModifier + halfTileSize;
@@ -34,9 +34,10 @@ Animal.prototype.move = function (m = 1, speed) {
       nextX = util.wrapRange(this.cx + speed * m, lowerBound, upperBound);
       nextXIdx = Math.floor((nextX + bound) * idxModifier);
       if (this.xIdx !== nextXIdx) {
+        oldIdx = this.xIdx;
+        this.xIdx = nextXIdx;
         simulationState.swapIndex(
-          { cx: this.xIdx, cy: this.yIdx, cz: this.zIdx },
-          { cx: nextXIdx, cy: this.yIdx, cz: this.zIdx },
+          { cx: oldIdx, cy: this.yIdx, cz: this.zIdx },
           this,
         );
       }
@@ -46,9 +47,10 @@ Animal.prototype.move = function (m = 1, speed) {
       nextX = util.wrapRange(this.cx - speed * m, lowerBound, upperBound);
       nextXIdx = Math.floor((nextX + bound) * idxModifier);
       if (this.xIdx !== nextXIdx) {
+        oldIdx = this.xIdx;
+        this.xIdx = nextXIdx;
         simulationState.swapIndex(
-          { cx: this.xIdx, cy: this.yIdx, cz: this.zIdx },
-          { cx: nextXIdx, cy: this.yIdx, cz: this.zIdx },
+          { cx: oldIdx, cy: this.yIdx, cz: this.zIdx },
           this,
         );
       }
@@ -58,9 +60,10 @@ Animal.prototype.move = function (m = 1, speed) {
       nextY = util.wrapRange(this.cy + speed * m, lowerBound, upperBound);
       nextYIdx = Math.floor((nextY + bound) * idxModifier);
       if (this.yIdx !== nextYIdx) {
+        oldIdx = this.yIdx;
+        this.yIdx = nextYIdx;
         simulationState.swapIndex(
-          { cx: this.xIdx, cy: this.yIdx, cz: this.zIdx },
-          { cx: this.xIdx, cy: nextYIdx, cz: this.zIdx },
+          { cx: this.xIdx, cy: oldIdx, cz: this.zIdx },
           this,
         );
       }
@@ -70,9 +73,10 @@ Animal.prototype.move = function (m = 1, speed) {
       nextY = util.wrapRange(this.cy - speed * m, lowerBound, upperBound);
       nextYIdx = Math.floor((nextY + bound) * idxModifier);
       if (this.YIdx !== nextYIdx) {
+        oldIdx = this.yIdx;
+        this.yIdx = nextYIdx;
         simulationState.swapIndex(
-          { cx: this.xIdx, cy: this.yIdx, cz: this.zIdx },
-          { cx: this.xIdx, cy: nextYIdx, cz: this.zIdx },
+          { cx: this.xIdx, cy: oldIdx, cz: this.zIdx },
           this,
         );
       }
@@ -80,23 +84,25 @@ Animal.prototype.move = function (m = 1, speed) {
       break;
     case 5: // Forwards
       nextZ = util.wrapRange(this.cz - speed * m, lowerBound, upperBound);
-      nextZIdx = Math.floor((nextY + bound) * idxModifier);
+      nextZIdx = Math.floor((nextZ + bound) * idxModifier);
       if (this.zIdx !== nextZIdx) {
+        oldIdx = this.zIdx;
+        this.zIdx = nextZIdx;
         simulationState.swapIndex(
-          { cx: this.xIdx, cy: this.yIdx, cz: this.zIdx },
-          { cx: this.xIdx, cy: this.YIdx, cz: nextZIdx },
+          { cx: this.xIdx, cy: this.yIdx, cz: oldIdx },
           this,
         );
       }
       this.cz = nextZ;
       break;
     case 6: // Backwards
-      nextZ = util.wrapRange(this.cz - speed * m, lowerBound, upperBound);
-      nextZIdx = Math.floor((nextY + bound) * idxModifier);
+      nextZ = util.wrapRange(this.cz + speed * m, lowerBound, upperBound);
+      nextZIdx = Math.floor((nextZ + bound) * idxModifier);
       if (this.zIdx !== nextZIdx) {
+        oldIdx = this.zIdx;
+        this.zIdx = nextZIdx;
         simulationState.swapIndex(
-          { cx: this.xIdx, cy: this.yIdx, cz: this.zIdx },
-          { cx: this.xIdx, cy: this.YIdx, cz: nextZIdx },
+          { cx: this.xIdx, cy: this.yIdx, cz: oldIdx },
           this,
         );
       }
@@ -104,4 +110,3 @@ Animal.prototype.move = function (m = 1, speed) {
       break;
   }
 };
-

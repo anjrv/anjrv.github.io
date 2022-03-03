@@ -44,8 +44,8 @@ const points = [];
 const colors = [];
 const halfWorldDimension = 0.9;
 const fps = 60;
-const sheepSpeed = 0.005;
-const wolfSpeed = 0.005;
+const sheepSpeed = 0.002;
+const wolfSpeed = 0.002;
 const baseGridQuant = 10;
 const storage = window.sessionStorage;
 const idxModifier = 10 / 1.8;
@@ -247,37 +247,34 @@ window.onload = function init() {
 
   let i = 0;
   const tiles = gridQuant * gridQuant * gridQuant;
+  const halfTileSize = 1.8 / gridQuant / 2;
   while (i < tiles && i < startingSheep) {
-    const x = util.randRange(-bound, bound);
-    const y = util.randRange(-bound, bound);
-    const z = util.randRange(-bound, bound);
+    const x = util.randIntRange(0, gridQuant - 1);
+    const y = util.randIntRange(0, gridQuant - 1);
+    const z = util.randIntRange(0, gridQuant - 1);
 
-    if (
-      !simulationState.grid[
-        `${Math.floor((x + bound) * idxModifier)},${Math.floor(
-          (y + bound) * idxModifier,
-        )},${Math.floor((x + bound) * idxModifier)}`
-      ]
-    ) {
-      simulationState.spawnSheep(x, y, z);
+    if (!simulationState.grid[`${x},${y},${z}`]) {
+      simulationState.spawnSheep(
+        x * (halfTileSize * 2) + halfTileSize - 0.9,
+        y * (halfTileSize * 2) + halfTileSize - 0.9,
+        z * (halfTileSize * 2) + halfTileSize - 0.9,
+      );
       i++;
     }
   }
 
   i = 0;
   while (i < tiles && i < startingWolves) {
-    const x = util.randRange(-bound, bound);
-    const y = util.randRange(-bound, bound);
-    const z = util.randRange(-bound, bound);
+    const x = util.randIntRange(0, gridQuant - 1);
+    const y = util.randIntRange(0, gridQuant - 1);
+    const z = util.randIntRange(0, gridQuant - 1);
 
-    if (
-      !simulationState.grid[
-        `${Math.floor((x + bound) * idxModifier)},${Math.floor(
-          (y + bound) * idxModifier,
-        )},${Math.floor((x + bound) * idxModifier)}`
-      ]
-    ) {
-      simulationState.spawnWolf(x, y, z);
+    if (!simulationState.grid[`${x},${y},${z}`]) {
+      simulationState.spawnWolf(
+        x * (halfTileSize * 2) + halfTileSize - 0.9,
+        y * (halfTileSize * 2) + halfTileSize - 0.9,
+        z * (halfTileSize * 2) + halfTileSize - 0.9,
+      );
       i++;
     }
   }

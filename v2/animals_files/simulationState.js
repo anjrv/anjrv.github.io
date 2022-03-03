@@ -2,7 +2,7 @@ const simulationState = {
   currId: 0,
   sheep: [],
   wolves: [],
-  grid: [], // Use hashtable 'x,y,z' key format instead of 3D array
+  grid: new Object(), // Use hashtable 'x,y,z' key format instead of 3D array
 
   spawnSheep: function (cx, cy, cz) {
     const s = new Sheep({
@@ -39,6 +39,7 @@ const simulationState = {
   },
 
   updateAnimals: function (m = 1) {
+    // console.log(this.grid);
     for (let i = 0; i < simulationState.sheep.length; i++) {
       simulationState.sheep[i].update(m);
     }
@@ -85,10 +86,8 @@ const simulationState = {
     }
   },
 
-  swapIndex: function (oldIdx, newIdx, a) {
+  swapIndex: function (oldIdx, a) {
     delete this.grid[`${oldIdx.cx},${oldIdx.cy},${oldIdx.cz}`];
-    this.grid[`${newIdx.cx},${newIdx.cy},${newIdx.cz}`] = a;
+    this.grid[`${a.xIdx},${a.yIdx},${a.zIdx}`] = a;
   },
-
-  rebuildGrid: function () {},
 };

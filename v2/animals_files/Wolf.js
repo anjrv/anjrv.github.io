@@ -50,5 +50,5 @@ Wolf.prototype.update = function(m = 1) {
     this.dir = util.randIntRange(1, 6);
   }
 
-  this.move(m, wolfSpeed);
+  this.move(m, wolfSpeed * wolfSpeedMultiplier);
 }
