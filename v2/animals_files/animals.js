@@ -22,16 +22,16 @@ let mvLoc;
 // Slider values
 let speedMultiplier = 1;
 let sheepSpeedMultiplier = 1;
-let sheepBirthSpeed = 5;
+let sheepBirthSpeed = 2;
 let sheepPanicRange = 2;
 
-let wolfSpeedMultiplier = 1;
+let wolfSpeedMultiplier = 4;
 let wolfBirthSpeed = 3;
-let wolfAggroRange = 3;
+let wolfAggroRange = 100;
 
-let gridQuant = 10;
-let startingSheep = 10;
-let startingWolves = 2;
+let gridQuant = 30;
+let startingSheep = 50;
+let startingWolves = 5;
 
 let scaleModifier;
 let bound;
