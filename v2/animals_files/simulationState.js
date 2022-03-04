@@ -70,18 +70,6 @@ const simulationState = {
         this.wolves.splice(i, 1);
       } else this.wolves[i].update(m);
     }
-
-    //if (sheepDied) {
-    //  for (let i = this.sheep.length; i >= 0; i--) {
-    //    if (this.sheep[i].isDead) this.sheep.splice(i, 1);
-    //  }
-    //}
-
-    //if (wolfDied) {
-    //  for (let i = this.wolves.length; i >= 0; i--) {
-    //    if (this.wolves[i].isDead) this.wolves.splice(i, 1);
-    //  }
-    //}
   },
 
   drawAnimals: function (ctm) {
