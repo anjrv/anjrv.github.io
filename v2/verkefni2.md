@@ -18,7 +18,7 @@ Verkefnið byggist á kóða sem kemur með cube-cull. Aðallega var þetta nota
 * **Update virkni**: Fyrir hvert render kall er skoðað hvort einhver dýr á að breyta stefnu og staðsetningin er svo uppfært út frá núverandi stefnu. Einnig er skoðað hvort það á að bæta við eða drepa einhvern dýr.
   - **Hreyfingin**: Ákvörðun var tekinn til að hafa nákvæmari hreyfingu og ekki bara fletta milli fylkja-reita. Hermunin kemur þá betur fram en það var farið í ýmsar krókaleiðir til að herma eftir árekstur.
   - **Árekstur**: Til þess að minnka kostnað fyrir áreksturs aðferðir er pýþagórasarregla bara notaður til að gá hvort úlfur hefur náð kind. Í öðrum tilfellum er bara skoðaður hvort hægt sé að ferðast milli fylkja reit eða ekki.
-  - **"Fylki"**: Javascript hefur eiginlega ekki góða leið til að útfæra góða 3D fylki, notaður var hakkatöflu með fylkja staðsetningar sem lyklar. Sjá dæmi fyrir neðan.
+  - **"Fylki"**: Javascript hefur eiginlega ekki góða leið til að útfæra góða 3D fylki, notaður var hakkatafla með fylkja staðsetningar sem lyklar. Sjá dæmi fyrir neðan.
 
 ```javascript
         updateAnimals: function (m = 1) {

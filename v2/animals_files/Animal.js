@@ -122,4 +122,16 @@ Animal.prototype.move = function (m = 1, speed) {
       this.cz = nextZ;
       break;
   }
+
+  // Cheat
+  if (
+    this.cx < lowerBound ||
+    this.cx > upperBound ||
+    this.cy < lowerBound ||
+    this.cy > upperBound ||
+    this.cz < lowerBound ||
+    this.cz > upperBound
+  ) {
+    this.isDead = true;
+  }
 };
