@@ -163,7 +163,7 @@ window.onload = function init() {
   window.addEventListener('keydown', function (e) {
     switch (e.keyCode) {
       case 37:
-        rgb = rgb > 99 ? rgb - 1 : rgb;
+        rgb = rgb > 100 ? rgb - 1 : rgb;
         var tmp = vec4(
           Number(String(rgb)[0]) / 10 + 1,
           Number(String(rgb)[1]) / 10 + 1,
