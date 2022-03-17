@@ -1,14 +1,14 @@
 /////////////////////////////////////////////////////////////////
 //    Sýnidæmi í Tölvugrafík
-//     Kúla sem lituð er með flatri litun.  Hægt að snúa henni
-//     með músinni og auka/minnka nákvæmni kúlunnar með hnöppum
+//     Tepottur sem litaður er með Phong litun.  Hægt að snúa
+//     honum með músinni og þysja með músarhjóli
 //
 //    Hjálmtýr Hafsteinsson, mars 2022
 /////////////////////////////////////////////////////////////////
 var canvas;
 var gl;
 
-var NumVertices = 36;
+var index = 0;
 
 var pointsArray = [];
 var normalsArray = [];
@@ -18,22 +18,24 @@ var spinX = 0;
 var spinY = 0;
 var origX;
 var origY;
+var program;
 
 var zDist = -5.0;
 
-var fovy = 50.0;
+var fovy = 60.0;
 var near = 0.2;
 var far = 100.0;
 
-var lightPosition = vec4(1.0, 1.0, 1.0, 0.0);
-var lightAmbient = vec4(0.2, 0.2, 0.2, 1.0);
+var lightPosition = vec4(10.0, 10.0, 10.0, 1.0);
+var lightAmbient = vec4(1.0, 1.0, 1.0, 1.0);
 var lightDiffuse = vec4(1.0, 1.0, 1.0, 1.0);
 var lightSpecular = vec4(1.0, 1.0, 1.0, 1.0);
 
-var materialAmbient = vec4(1.0, 0.0, 1.0, 1.0);
+var materialAmbient = vec4(0.2, 0.0, 0.2, 1.0);
 var materialDiffuse = vec4(1.0, 0.8, 0.0, 1.0);
 var materialSpecular = vec4(1.0, 1.0, 1.0, 1.0);
-var materialShininess = 20.0;
+var materialShininess = 50.0;
+var discardPriority = 4.0;
 
 var ctm;
 var ambientColor, diffuseColor, specularColor;
@@ -43,54 +45,11 @@ var modelViewMatrixLoc, projectionMatrixLoc;
 
 var normalMatrix, normalMatrixLoc;
 
+var rgb = 777;
+
 var eye;
 var at = vec3(0.0, 0.0, 0.0);
 var up = vec3(0.0, 1.0, 0.0);
-
-function quad(a, b, c, d) {
-  var vertices = [
-    vec4(-0.5, -0.5, 0.5, 1.0),
-    vec4(-0.5, 0.5, 0.5, 1.0),
-    vec4(0.5, 0.5, 0.5, 1.0),
-    vec4(0.5, -0.5, 0.5, 1.0),
-    vec4(-0.5, -0.5, -0.5, 1.0),
-    vec4(-0.5, 0.5, -0.5, 1.0),
-    vec4(0.5, 0.5, -0.5, 1.0),
-    vec4(0.5, -0.5, -0.5, 1.0),
-  ];
-
-  var indices = [a, b, c, a, c, d];
-
-  var t1 = subtract(vertices[b], vertices[a]);
-  var t2 = subtract(vertices[c], vertices[a]);
-  var t3 = subtract(vertices[d], vertices[a]);
-  var normal = normalize(cross(t2, t1));
-  normal = vec4(normal);
-
-  normalsArray.push(normal);
-  normalsArray.push(normal);
-  normalsArray.push(normal);
-
-  normal = normalize(cross(t3, t2));
-  normal = vec4(normal);
-
-  normalsArray.push(normal);
-  normalsArray.push(normal);
-  normalsArray.push(normal);
-
-  for (var i = 0; i < indices.length; ++i) {
-    pointsArray.push(vertices[indices[i]]);
-  }
-}
-
-function colorCube() {
-  quad(2, 3, 7, 6);
-  quad(5, 4, 0, 1);
-  quad(2, 3, 0, 1);
-  quad(7, 4, 0, 3);
-  quad(2, 1, 5, 6);
-  quad(7, 6, 5, 4);
-}
 
 window.onload = function init() {
   canvas = document.getElementById('gl-canvas');
@@ -104,22 +63,27 @@ window.onload = function init() {
   gl.clearColor(0.9, 1.0, 1.0, 1.0);
 
   gl.enable(gl.DEPTH_TEST);
+  //gl.enable(gl.CULL_FACE);
+  gl.cullFace(gl.BACK);
 
-  //
-  //  Load shaders and initialize attribute buffers
-  //
-  var program = initShaders(gl, 'vertex-shader', 'fragment-shader');
+  var myTeapot = teapot(15);
+  myTeapot.scale(0.5, 0.5, 0.5);
+
+  console.log(myTeapot.TriangleVertices.length);
+
+  points = myTeapot.TriangleVertices;
+  normals = myTeapot.Normals;
+
+  program = initShaders(gl, 'vertex-shader', 'fragment-shader');
   gl.useProgram(program);
 
   ambientProduct = mult(lightAmbient, materialAmbient);
-  diffuseProduct = mult(lightDiffuse, materialDiffuse);
+  //diffuseProduct = mult(lightDiffuse, materialDiffuse);
   specularProduct = mult(lightSpecular, materialSpecular);
-
-  colorCube();
 
   var nBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, nBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, flatten(normalsArray), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, flatten(normals), gl.STATIC_DRAW);
 
   var vNormal = gl.getAttribLocation(program, 'vNormal');
   gl.vertexAttribPointer(vNormal, 4, gl.FLOAT, false, 0, 0);
@@ -127,7 +91,7 @@ window.onload = function init() {
 
   var vBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, flatten(pointsArray), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
 
   var vPosition = gl.getAttribLocation(program, 'vPosition');
   gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
@@ -138,11 +102,20 @@ window.onload = function init() {
   normalMatrixLoc = gl.getUniformLocation(program, 'normalMatrix');
 
   projectionMatrix = perspective(fovy, 1.0, near, far);
+  gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
 
   gl.uniform4fv(
     gl.getUniformLocation(program, 'ambientProduct'),
     flatten(ambientProduct),
   );
+
+  diffuseProduct = vec4(
+    Number(String(rgb)[0]) / 10 + 1,
+    Number(String(rgb)[1]) / 10 + 1,
+    Number(String(rgb)[2]) / 10 + 1,
+    1.0,
+  );
+
   gl.uniform4fv(
     gl.getUniformLocation(program, 'diffuseProduct'),
     flatten(diffuseProduct),
@@ -172,7 +145,7 @@ window.onload = function init() {
   canvas.addEventListener('mousemove', function (e) {
     if (movement) {
       spinY = (spinY + (e.clientX - origX)) % 360;
-      spinX = (spinX + (origY - e.clientY)) % 360;
+      spinX = (spinX + (e.clientY - origY)) % 360;
       origX = e.clientX;
       origY = e.clientY;
     }
@@ -184,6 +157,43 @@ window.onload = function init() {
       zDist += 0.2;
     } else {
       zDist -= 0.2;
+    }
+  });
+
+  window.addEventListener('keydown', function (e) {
+    switch (e.keyCode) {
+      case 37:
+        rgb = rgb > 99 ? rgb - 1 : rgb;
+        var tmp = vec4(
+          Number(String(rgb)[0]) / 10 + 1,
+          Number(String(rgb)[1]) / 10 + 1,
+          Number(String(rgb)[2]) / 10 + 1,
+          1.0,
+        );
+        gl.uniform4fv(
+          gl.getUniformLocation(program, 'diffuseProduct'),
+          flatten(tmp),
+        );
+        break;
+      case 39:
+        rgb = rgb < 999 ? rgb + 1 : rgb;
+        var tmp = vec4(
+          Number(String(rgb)[0]) / 10 + 1,
+          Number(String(rgb)[1]) / 10 + 1,
+          Number(String(rgb)[2]) / 10 + 1,
+          1.0,
+        );
+        gl.uniform4fv(
+          gl.getUniformLocation(program, 'diffuseProduct'),
+          flatten(tmp),
+        );
+        break;
+      case 38:
+        discardPriority += discardPriority < 4.0 ? 0.1 : 0.0;
+        break;
+      case 40:
+        discardPriority -= discardPriority > 0.0 ? 0.1 : 0.0;
+        break;
     }
   });
 
@@ -204,10 +214,9 @@ function render() {
   ];
 
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
-  gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
   gl.uniformMatrix3fv(normalMatrixLoc, false, flatten(normalMatrix));
+  gl.uniform1f(gl.getUniformLocation(program, 'discardPrio'), discardPriority);
 
-  gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
-
+  gl.drawArrays(gl.TRIANGLES, 0, points.length);
   window.requestAnimFrame(render);
 }
