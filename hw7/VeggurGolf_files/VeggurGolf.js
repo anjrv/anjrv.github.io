@@ -210,8 +210,9 @@ window.onload = function init() {
         break;
     }
 
-    // Clamp Z to walls
+    // Clamp position to world
     userZPos = userZPos > 0.75 ? 0.75 : userZPos < -0.75 ? -0.75 : userZPos;
+    userXPos = userXPos > 8 ? 8 : userXPos < -8 ? -8 : userXPos;
   });
 
   // Event listener for mousewheel

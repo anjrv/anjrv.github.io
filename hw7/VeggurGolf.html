@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html><head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8"><style type="text/css">
-    canvas { background: blue; }
-</style>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <style type="text/css">
+        canvas {
+            background: blue;
+        }
+    </style>
 
 
-<script id="vertex-shader" type="x-shader/x-vertex">
+    <script id="vertex-shader" type="x-shader/x-vertex">
 
 attribute  vec4 vPosition;
 attribute  vec2 vTexCoord;
@@ -23,7 +28,7 @@ void main()
 } 
 </script>
 
-<script id="fragment-shader" type="x-shader/x-fragment">
+    <script id="fragment-shader" type="x-shader/x-fragment">
 
 precision mediump float;
 
@@ -41,17 +46,21 @@ main()
 </script>
 
 
-<script type="text/javascript" src="VeggurGolf_files/webgl-utils.js"></script>
-<script type="text/javascript" src="VeggurGolf_files/initShaders.js"></script>
-<script type="text/javascript" src="VeggurGolf_files/MV.js"></script>
-<script type="text/javascript" src="VeggurGolf_files/VeggurGolf.js"></script>
+    <script type="text/javascript" src="VeggurGolf_files/webgl-utils.js"></script>
+    <script type="text/javascript" src="VeggurGolf_files/initShaders.js"></script>
+    <script type="text/javascript" src="VeggurGolf_files/MV.js"></script>
+    <script type="text/javascript" src="VeggurGolf_files/VeggurGolf.js"></script>
 
 
-</head><body>
-<canvas id="gl-canvas" width="800" height="800">
+</head>
 
-<img id="VeggImage" src="VeggurGolf_files/wallpaper1.jpg" hidden="">
-<img id="GolfImage" src="VeggurGolf_files/carpet.jpg" hidden="">
+<body>
+    <canvas id="gl-canvas" width="800" height="800">
 
+        <img id="VeggImage" src="VeggurGolf_files/wallpaper1.jpg" hidden="">
+        <img id="GolfImage" src="VeggurGolf_files/carpet.jpg" hidden="">
 
-</canvas></body></html>
+    </canvas>
+</body>
+
+</html>
