@@ -45,10 +45,16 @@ varying vec2 fTexCoord;
 uniform mat4 projection;
 uniform mat4 modelview;
 
+uniform float time;
+
 void main()
 {
+    vec4 t = vPosition;
+    t.y += 0.2*sin(0.001*time + t.x);
+    t.z += 0.2*sin(0.005*time + 2.0*t.x);
+
     fTexCoord = vTexCoord;
-    gl_Position = projection * modelview * vPosition;
+    gl_Position = projection * modelview * t;
 }
 </script>
 
@@ -76,7 +82,7 @@ void main()
 <canvas id="gl-canvas" width="512" height="512">
 Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
-<img id="texImage" src="Fanastong_files/Island.jpg" hidden="">
+<img id="texImage" src="Fanastong_files/Estonia.png" hidden="">
 
 
 </body></html>

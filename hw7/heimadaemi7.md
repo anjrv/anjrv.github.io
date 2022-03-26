@@ -104,6 +104,10 @@ Getum notað auka hnútar á vegg til að búta úr mynstur:
 
 ## 4. Í dæmi 3 í Heimadæmum 4 átti að búa til tölvuskjá úr teningum.  Nú eigið þið að setja mynstur á skjáinn sjálfan, þannig að hann líti aðeins eðlilegar út.  Þið þurfið að finna/búa til mynd sem þið varpið á þessa hlið teningsins sem myndar framhlið skjásins.  Þið getið notað ykkar eigin lausn eða [sýnislausnina](https://hjalmtyr.github.io/WebGL-forrit/Lausnir/tolvuskjar.html) á dæminu.  Skilið skjámynd og hlekk á forritið.
 
+[Hlekkur](https://anjrv.github.io/hw7/letterH.html)
+
+![Screen](screen.png)
+
 
 \pagebreak
 
@@ -114,3 +118,10 @@ Getum notað auka hnútar á vegg til að búta úr mynstur:
 ### b. Notandi getur lyft fánanum upp og niður stöngina með lyklunum PgUp og PgDown. Passið að fáninn fari ekki of hátt eða of lágt.
 
 *Aukastig:  Hægt er að fá eitt aukastig fyrir þetta dæmi ef þið látið fánann blakta, þ.e. spjaldið með fánamynstrinu bylgjast.  Þið þurfið að framkvæma það í hnútalitaranum.*
+
+[Hlekkur](https://anjrv.github.io/hw7/Fanastong.html)
+
+*Aukastig útfært... ish*
+
+![Flag](flag.png)
+

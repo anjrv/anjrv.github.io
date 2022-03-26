@@ -204,27 +204,6 @@ function quad(a, b, c, d) {
 }
 
 function render() {
-  // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-  // var mv = mat4();
-  // mv = mult(mv, rotateX(spinX));
-  // mv = mult(mv, rotateY(spinY));
-
-  // mv1 = mult(mv, translate(0.0, 0.0, -0.02));
-  // mv1 = mult(mv1, scalem(1.6, 1.0, 0.1));
-  // gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
-  // gl.drawArrays(gl.TRIANGLES, 0, numVertices);
-
-  // mv1 = mult(mv, translate(0.0, -0.6, 0.0));
-  // mv1 = mult(mv1, scalem(0.1, 0.3, 0.05));
-  // gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
-  // gl.drawArrays(gl.TRIANGLES, 0, numVertices);
-
-  // mv1 = mult(mv, translate(0.0, -0.8, -0.05));
-  // mv1 = mult(mv1, scalem(0.8, 0.1, 0.5));
-  // gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
-  // gl.drawArrays(gl.TRIANGLES, 0, numVertices);
-
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   var mv = lookAt(
