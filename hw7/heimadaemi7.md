@@ -30,6 +30,10 @@ Færa í staðsetningu m, n: $T(m, n)$
 
 ## 2. Skrifið WebGL forrit þar sem notandinn getur "gengið" eftir löngum gangi.  Veggir gangsins hafa veggfóður og gólfið hefur teppi.  Þið getið fundið ágæt mynstur á [heimasíðu Paul Bourke](http://paulbourke.net/texturelibrary/).  Þið getið notað sýniforritið [VeggurGolf.html](https://hjalmtyr.github.io/WebGL-forrit/Angel/VeggurGolf.html) sem fyrirmynd, en í þessu forriti á notandinn ekki að geta gengið í gegnum veggina (þægilegast þá að láta veggina vera samsíða einum hnitakerfisás).  Skilið skjámynd og hlekk á forritið.
 
+[Hlekkur](https://anjrv.github.io/hw7/VeggurGolf.html)
+
+![Corridor](corridor.png)
+
 
 \pagebreak
 
@@ -39,14 +43,62 @@ Færa í staðsetningu m, n: $T(m, n)$
 
 ### a. Rissið upp mynstrið sem kemur á þetta spjald, ef mynsturhnitin eru þau sem merkt eru á hornin.  Rökstyðjið svar ykkar.
 
+![Mynd](31.jpg){height=20%}
+
 ### b. Við viljum fá spjald með mynstri eins og hér fyrir neðan.  Gefið upp mynsturhnit sem gefa okkur þá útkomu.  Hvaða aðrar mynsturstillingar þurfa að vera settar til að fá þetta mynstur?
 
 ![Mynstur2](23.png)
+
+Mynsturhnitið væri eftirfarandi fyrir (y,x).
+
+$$
+\begin{bmatrix}
+\frac{2}{3}, \frac{2}{3} & \frac{2}{3},2\\
+1,\frac{2}{3} & 1,2
+\end{bmatrix}
+$$
+
+Þurfum einnig að stilla á `gl.REPEAT` fyrir s.
+
+\pagebreak
 
 ### c. Nú viljum við þetta mynstur á vegginn.  Hvernig þarf spjaldið að vera skilgreint og hvernig er mynsturvörpunin útfærð?  Útskýrið og gefið upp mynsturhnit.
 
 ![Mynstur3](24.png)
 
+Getum notað auka hnútar á vegg til að búta úr mynstur:
+
+```js
+[
+  1/3, 1/3
+  2/3, 1/3
+  2/3, 2/3
+  2/3, 2/3
+  1/3, 2/3
+  1/3, 1/3
+
+  1/3, 1/3
+  2/3, 1/3
+  2/3, 2/3
+  2/3, 2/3
+  1/3, 2/3
+  1/3, 1/3
+
+  2/3, 2/3
+  1, 2/3
+  1, 1
+  1, 1
+  2/3, 1
+  2/3, 2/3
+
+  0, 2/3
+  1/3, 2/3
+  1/3, 1
+  1/3, 1
+  0, 1
+  0, 2/3
+];
+```
 
 \pagebreak
 
