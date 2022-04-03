@@ -3,8 +3,8 @@ function createScene() {
   const scene = new THREE.Scene();
   scene.add(new THREE.AmbientLight(0x888888));
 
-  const light = new THREE.SpotLight('#FFFFFF', 0.5);
-  light.position.set(0, 0, 50);
+  const light = new THREE.DirectionalLight('#FFFFFF', 1);
+  light.position.set(0, 0, 10);
   scene.add(light);
 
   return scene;
@@ -12,7 +12,7 @@ function createScene() {
 
 function createWall() {
   const geom = new THREE.BoxGeometry(1, 1, 0.4);
-  const mat = new THREE.MeshStandardMaterial({ color: '#153C4E' });
+  const mat = new THREE.MeshLambertMaterial({ color: '#153C4E' });
 
   const wall = new THREE.Mesh(geom, mat);
   wall.isWall = true;
