@@ -1,4 +1,3 @@
-
 function createScene() {
   const scene = new THREE.Scene();
   scene.add(new THREE.AmbientLight(0x888888));
@@ -22,7 +21,10 @@ function createWall() {
 
 function createDot() {
   const geom = new THREE.SphereGeometry(DOT_RADIUS);
-  const mat = new THREE.MeshStandardMaterial({ color: '#FFFFFF', roughness: 0.0 });
+  const mat = new THREE.MeshStandardMaterial({
+    color: '#FFFFFF',
+    roughness: 0.0,
+  });
 
   const dot = new THREE.Mesh(geom, mat);
   dot.isDot = true;
@@ -32,7 +34,10 @@ function createDot() {
 
 function createPowerUp() {
   const geom = new THREE.SphereGeometry(PELLET_RADIUS);
-  const mat = new THREE.MeshStandardMaterial({ color: '#CD607E', roughness: 0.0 });
+  const mat = new THREE.MeshStandardMaterial({
+    color: '#CD607E',
+    roughness: 0.0,
+  });
 
   const power = new THREE.Mesh(geom, mat);
   power.isPowerUp = true;
