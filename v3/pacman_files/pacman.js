@@ -114,8 +114,8 @@ function updateCameras() {
     new THREE.Vector3()
       .copy(pacman.position)
       .addScaledVector(UP, 2)
-      .addScaledVector(pacman.direction, -1),
-    0.05,
+      .addScaledVector(pacman.direction, keys[32] ? 3 : -1),
+    keys[32] ? 0.5 : 0.05,
   );
   thirdPerson.lookAt(
     new THREE.Vector3().copy(pacman.position).add(pacman.direction),
