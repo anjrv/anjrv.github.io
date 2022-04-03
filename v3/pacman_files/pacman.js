@@ -12,6 +12,7 @@ const thirdPerson = new THREE.PerspectiveCamera(
   0.1,
   1000,
 );
+thirdPerson.up.copy(UP);
 
 const overhead = new THREE.PerspectiveCamera(
   75,
@@ -49,6 +50,7 @@ function updatePacman() {
     // Down arrow
     pacman.direction.applyAxisAngle(UP, Math.PI);
     pacman.prevWasWall = 0;
+    console.log(thirdPerson);
   }
   if (eatKey(37)) {
     // Left arrow
@@ -61,7 +63,7 @@ function updatePacman() {
     pacman.prevWasWall = 0;
   }
 
-  if (pacman.isMoving && pacman.prevWasWall < 5)
+  if (pacman.isMoving && pacman.prevWasWall < 3)
     pacman.translateOnAxis(LEFT, PACMAN_SPEED); // Try advance
 
   // Clamp to wall edges
@@ -82,13 +84,16 @@ function updatePacman() {
     pacman.prevWasWall++;
   }
 
-  thirdPerson.position.x = pacman.position.x + 10;
-  thirdPerson.position.y = pacman.position.y;
-  thirdPerson.position.z = pacman.position.z + 5;
-  thirdPerson.rotation.x = pacman.rotation.x;
-  thirdPerson.rotation.y = pacman.rotation.y;
-
-  thirdPerson.lookAt(pacman.position);
+  thirdPerson.position.lerp(
+    new THREE.Vector3()
+      .copy(pacman.position)
+      .addScaledVector(UP, 2)
+      .addScaledVector(pacman.direction, -1),
+    0.05,
+  );
+  thirdPerson.lookAt(
+    new THREE.Vector3().copy(pacman.position).add(pacman.direction),
+  );
 }
 
 function update() {
