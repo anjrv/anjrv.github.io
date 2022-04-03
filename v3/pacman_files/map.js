@@ -1,35 +1,35 @@
 const MAP = [
-  '############################',
-  '#............##............#',
-  '#.####.#####.##.#####.####.#',
-  '#o####.#####.##.#####.####o#',
-  '#.####.#####.##.#####.####.#',
-  '#..........................#',
-  '#.####.##.########.##.####.#',
-  '#.####.##.########.##.####.#',
-  '#......##....##....##......#',
-  '#.####.##### ## #####.####.#',
-  '#.####.##### ## #####.####.#',
-  '#.####.##    G     ##.####.#',
-  '#.####.## ######## ##.####.#',
-  '#.####.## ######## ##.####.#',
-  '#......   ########   ......#',
-  '#.####.## ######## ##.####.#',
-  '#.####.## ######## ##.####.#',
-  '#.####.##          ##.####.#',
-  '#.####.## ######## ##.####.#',
-  '#.####.## ######## ##.####.#',
-  '#............##............#',
-  '#.####.#####.##.#####.####.#',
-  '#.####.#####.##.#####.####.#',
-  '#o..##.......P .......##..o#',
-  '###.##.##.########.##.##.###',
-  '###.##.##.########.##.##.###',
-  '#......##....##....##......#',
-  '#.##########.##.##########.#',
-  '#.##########.##.##########.#',
-  '#..........................#',
-  '############################',
+  'WWWWWWWWWWWWWWWWWWWWWWWWWWWW',
+  'W............WW............W',
+  'W.WWWW.WWWWW.WW.WWWWW.WWWW.W',
+  'WoWWWW.WWWWW.WW.WWWWW.WWWWoW',
+  'W.WWWW.WWWWW.WW.WWWWW.WWWW.W',
+  'W..........................W',
+  'W.WWWW.WW.WWWWWWWW.WW.WWWW.W',
+  'W.WWWW.WW.WWWWWWWW.WW.WWWW.W',
+  'W......WW....WW....WW......W',
+  'W.WWWW.WWWWW WW WWWWW.WWWW.W',
+  'W.WWWW.WWWWW WW WWWWW.WWWW.W',
+  'W.WWWW.WW    G     WW.WWWW.W',
+  'W.WWWW.WW WWWWWWWW WW.WWWW.W',
+  'W.WWWW.WW WWWWWWWW WW.WWWW.W',
+  'W......   WWWWWWWW   ......W',
+  'W.WWWW.WW WWWWWWWW WW.WWWW.W',
+  'W.WWWW.WW WWWWWWWW WW.WWWW.W',
+  'W.WWWW.WW          WW.WWWW.W',
+  'W.WWWW.WW WWWWWWWW WW.WWWW.W',
+  'W.WWWW.WW WWWWWWWW WW.WWWW.W',
+  'W............WW............W',
+  'W.WWWW.WWWWW.WW.WWWWW.WWWW.W',
+  'W.WWWW.WWWWW.WW.WWWWW.WWWW.W',
+  'Wo..WW.......P .......WW..oW',
+  'WWW.WW.WW.WWWWWWWW.WW.WW.WWW',
+  'WWW.WW.WW.WWWWWWWW.WW.WW.WWW',
+  'W......WW....WW....WW......W',
+  'W.WWWWWWWWWW.WW.WWWWWWWWWW.W',
+  'W.WWWWWWWWWW.WW.WWWWWWWWWW.W',
+  'W..........................W',
+  'WWWWWWWWWWWWWWWWWWWWWWWWWWWW',
 ];
 
 function initMap(scene) {
@@ -41,7 +41,6 @@ function initMap(scene) {
   map.dots = 0;
   map.ghosts = 0;
   map.pacman = null;
-  map.pacmanSpawn = null;
   map.ghostSpawn = null;
 
   let y;
@@ -55,7 +54,7 @@ function initMap(scene) {
       let object = null;
 
       switch (curr) {
-        case '#':
+        case 'W':
           object = createWall();
           object.position.set(x, y, -0.3);
           break;
@@ -69,7 +68,6 @@ function initMap(scene) {
           object.position.set(x, y, 0);
           break;
         case 'P':
-          map.pacmanSpawn = new THREE.Vector3(x, y, 0);
           const pacman = createPacman();
           pacman.position.set(x, y, 0);
           map.pacman = pacman;
@@ -77,7 +75,7 @@ function initMap(scene) {
           break;
         case 'G':
           map.ghostSpawn = new THREE.Vector3(x, y, 0);
-          const ghost = createGhost();
+          const ghost = createGhost('#FF0000');
           ghost.position.set(x, y, 0);
           scene.add(ghost);
           map.ghosts++;

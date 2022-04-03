@@ -56,6 +56,7 @@ function updatePacman() {
     .round();
 
   if (eatKey(38)) pacman.isMoving = true; // Up arrow
+
   if (eatKey(40)) {
     // Down arrow
     pacman.direction.applyAxisAngle(UP, Math.PI);
@@ -72,10 +73,10 @@ function updatePacman() {
     pacman.prevWasWall = 0;
   }
 
-  if (pacman.isMoving && pacman.prevWasWall < 3)
+  if (pacman.isMoving && pacman.prevWasWall < 2)
     pacman.translateOnAxis(LEFT, PACMAN_SPEED); // Try advance
 
-  // Clamp to wall edges
+  // Aggressively push out of walls
   if (map.isWall(up)) {
     pacman.position.y = up.y - 0.6 - PACMAN_RADIUS;
     pacman.prevWasWall++;

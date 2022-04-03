@@ -12,7 +12,7 @@ function createScene() {
 
 function createWall() {
   const geom = new THREE.BoxGeometry(1, 1, 0.4);
-  const mat = new THREE.MeshLambertMaterial({ color: '#0000FF' });
+  const mat = new THREE.MeshStandardMaterial({ color: '#153C4E' });
 
   const wall = new THREE.Mesh(geom, mat);
   wall.isWall = true;
@@ -22,7 +22,7 @@ function createWall() {
 
 function createDot() {
   const geom = new THREE.SphereGeometry(DOT_RADIUS);
-  const mat = new THREE.MeshPhongMaterial({ color: '#FFFFFF' });
+  const mat = new THREE.MeshStandardMaterial({ color: '#FFFFFF', roughness: 0.0 });
 
   const dot = new THREE.Mesh(geom, mat);
   dot.isDot = true;
@@ -32,7 +32,7 @@ function createDot() {
 
 function createPowerUp() {
   const geom = new THREE.SphereGeometry(PELLET_RADIUS);
-  const mat = new THREE.MeshPhongMaterial({ color: '#FFFFFF' });
+  const mat = new THREE.MeshStandardMaterial({ color: '#CD607E', roughness: 0.0 });
 
   const power = new THREE.Mesh(geom, mat);
   power.isPowerUp = true;
@@ -42,7 +42,7 @@ function createPowerUp() {
 
 function createPacman() {
   const geom = new THREE.SphereGeometry(PACMAN_RADIUS, 16, 16);
-  const mat = new THREE.MeshPhongMaterial({ color: '#FFFF00' });
+  const mat = new THREE.MeshStandardMaterial({ color: '#FFFF31' });
 
   const pacman = new THREE.Mesh(geom, mat);
   pacman.direction = new THREE.Vector3(-1, 0, 0);
@@ -54,9 +54,9 @@ function createPacman() {
   return pacman;
 }
 
-function createGhost() {
+function createGhost(color) {
   const geom = new THREE.SphereGeometry(GHOST_RADIUS, 16, 16);
-  const mat = new THREE.MeshPhongMaterial({ color: '#FF0000' });
+  const mat = new THREE.MeshStandardMaterial({ color: color });
 
   const ghost = new THREE.Mesh(geom, mat);
   ghost.direction = new THREE.Vector3(-1, 0, 0);
