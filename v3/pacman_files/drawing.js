@@ -45,8 +45,10 @@ function createPacman() {
   const mat = new THREE.MeshPhongMaterial({ color: '#FFFF00' });
 
   const pacman = new THREE.Mesh(geom, mat);
+  pacman.direction = new THREE.Vector3(-1, 0, 0);
   pacman.isPacman = true;
-  pacman.distanceMoved = 0;
+  pacman.isMoving = false;
+  pacman.prevWasWall = 0;
 
   return pacman;
 }
@@ -56,6 +58,7 @@ function createGhost() {
   const mat = new THREE.MeshPhongMaterial({ color: '#FF0000' });
 
   const ghost = new THREE.Mesh(geom, mat);
+  ghost.direction = new THREE.Vector3(-1, 0, 0);
   ghost.isGhost = true;
   ghost.isScared = false;
 
