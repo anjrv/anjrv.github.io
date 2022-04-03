@@ -33,7 +33,7 @@ function createDot() {
 }
 
 function createPowerUp() {
-  const geom = new THREE.SphereGeometry(PELLET_RADIUS);
+  const geom = new THREE.SphereGeometry(UP_RADIUS, 16, 16);
   const mat = new THREE.MeshStandardMaterial({
     color: '#CD607E',
     roughness: 0.0,
@@ -60,7 +60,7 @@ function createPacman() {
 }
 
 function createGhost(color) {
-  const geom = new THREE.SphereGeometry(GHOST_RADIUS, 16, 16);
+  const geom = new THREE.SphereGeometry(GHOST_RADIUS, 32, 32);
   const mat = new THREE.MeshStandardMaterial({ color: color });
 
   const ghost = new THREE.Mesh(geom, mat);

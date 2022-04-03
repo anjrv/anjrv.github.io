@@ -1,11 +1,11 @@
-const PACMAN_SPEED = 0.1;
+const PACMAN_SPEED = 0.05;
 const PACMAN_RADIUS = 0.25;
 
-const GHOST_SPEED = 0.08;
+const GHOST_SPEED = PACMAN_SPEED * 0.8;
 const GHOST_RADIUS = PACMAN_RADIUS * 1.25;
 
 const DOT_RADIUS = 0.05;
-const PELLET_RADIUS = DOT_RADIUS * 2;
+const UP_RADIUS = DOT_RADIUS * 2;
 
 const UP = new THREE.Vector3(0, 0, 1);
 const LEFT = new THREE.Vector3(-1, 0, 0);
