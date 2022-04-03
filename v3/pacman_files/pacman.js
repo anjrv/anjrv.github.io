@@ -1,11 +1,18 @@
-let currCam = 1;
-
+const fps = 59.94;
 const canvas = document.querySelector('#c');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 const scene = createScene();
 const map = initMap(scene);
 
 // Cameras
+const firstPerson = new THREE.PerspectiveCamera(
+  90,
+  canvas.clientWidth / canvas.clientHeight,
+  0.1,
+  1000,
+);
+firstPerson.up.copy(UP);
+
 const thirdPerson = new THREE.PerspectiveCamera(
   65,
   canvas.clientWidth / canvas.clientHeight,
@@ -21,6 +28,9 @@ const overhead = new THREE.PerspectiveCamera(
   1000,
 );
 overhead.position.set(map.centerX - 0.5, map.centerY, 22);
+
+let currCam = 2;
+let score = 0;
 
 function updatePacman() {
   const pacman = map.pacman;
@@ -50,7 +60,6 @@ function updatePacman() {
     // Down arrow
     pacman.direction.applyAxisAngle(UP, Math.PI);
     pacman.prevWasWall = 0;
-    console.log(thirdPerson);
   }
   if (eatKey(37)) {
     // Left arrow
@@ -84,6 +93,22 @@ function updatePacman() {
     pacman.prevWasWall++;
   }
 
+  const cell = map.getCell(pacman.position);
+
+  if (cell && cell.visible) {
+    if (cell.isDot) {
+      map.clear(pacman.position);
+      score++;
+    } else if (cell.isPowerUp) {
+      map.clear(pacman.position);
+      pacman.isPowered = true;
+    }
+  }
+}
+
+function updateCameras() {
+  const pacman = map.pacman;
+
   thirdPerson.position.lerp(
     new THREE.Vector3()
       .copy(pacman.position)
@@ -94,27 +119,44 @@ function updatePacman() {
   thirdPerson.lookAt(
     new THREE.Vector3().copy(pacman.position).add(pacman.direction),
   );
+
+  firstPerson.position.lerp(
+    new THREE.Vector3()
+      .copy(pacman.position)
+      .addScaledVector(pacman.direction, 0),
+    0.5,
+  );
+  firstPerson.lookAt(
+    new THREE.Vector3().copy(pacman.position).add(pacman.direction),
+  );
 }
 
 function update() {
   if (eatKey('49')) currCam = 1;
   if (eatKey('50')) currCam = 2;
+  if (eatKey('51')) currCam = 3;
 
   updatePacman();
+  updateCameras();
 }
 
 const animate = function () {
-  update();
-  requestAnimationFrame(animate);
+  setTimeout(() => {
+    update();
+    requestAnimationFrame(animate);
 
-  switch (currCam) {
-    case 1:
-      renderer.render(scene, overhead);
-      break;
-    case 2:
-      renderer.render(scene, thirdPerson);
-      break;
-  }
+    switch (currCam) {
+      case 1:
+        renderer.render(scene, firstPerson);
+        break;
+      case 2:
+        renderer.render(scene, thirdPerson);
+        break;
+      case 3:
+        renderer.render(scene, overhead);
+        break;
+    }
+  }, 1000 / fps);
 };
 
 animate();

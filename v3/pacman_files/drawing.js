@@ -11,7 +11,7 @@ function createScene() {
 }
 
 function createWall() {
-  const geom = new THREE.BoxGeometry(1, 1, 1);
+  const geom = new THREE.BoxGeometry(1, 1, 0.4);
   const mat = new THREE.MeshLambertMaterial({ color: '#0000FF' });
 
   const wall = new THREE.Mesh(geom, mat);
@@ -48,6 +48,7 @@ function createPacman() {
   pacman.direction = new THREE.Vector3(-1, 0, 0);
   pacman.isPacman = true;
   pacman.isMoving = false;
+  pacman.isPowered = false;
   pacman.prevWasWall = 0;
 
   return pacman;

@@ -57,7 +57,7 @@ function initMap(scene) {
       switch (curr) {
         case '#':
           object = createWall();
-          object.position.set(x, y, 0);
+          object.position.set(x, y, -0.3);
           break;
         case '.':
           object = createDot();
