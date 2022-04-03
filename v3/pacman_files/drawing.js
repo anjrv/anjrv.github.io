@@ -46,7 +46,7 @@ function createPowerUp() {
 }
 
 function createPacman() {
-  const geom = new THREE.SphereGeometry(PACMAN_RADIUS, 16, 16);
+  const geom = new THREE.SphereGeometry(PACMAN_RADIUS, 32, 32, 0, Math.PI * 1.8);
   const mat = new THREE.MeshStandardMaterial({ color: '#FFFF31' });
 
   const pacman = new THREE.Mesh(geom, mat);
