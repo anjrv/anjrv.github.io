@@ -6,7 +6,7 @@ const GHOST_RADIUS = PACMAN_RADIUS * 1.25;
 
 const DOT_RADIUS = 0.05;
 const UP_RADIUS = DOT_RADIUS * 2;
-const UP_DURATION = 30;
+const UP_DURATION = 10;
 
 const UP = new THREE.Vector3(0, 0, 1);
 const LEFT = new THREE.Vector3(-1, 0, 0);
