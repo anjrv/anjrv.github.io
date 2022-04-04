@@ -96,6 +96,7 @@ function createGhost(color) {
   ghost.direction = new THREE.Vector3(-1, 0, 0);
   ghost.isGhost = true;
   ghost.isScared = false;
+  ghost.originalColor = color;
 
   return ghost;
 }

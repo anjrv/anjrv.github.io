@@ -31,10 +31,12 @@ overhead.position.set(map.centerX - 0.5, map.centerY, 22);
 
 let currCam = 2;
 let score = 0;
+let dead = false;
 
 function updatePacman() {
   const pacman = map.pacman;
 
+  pacman.isPowered = false;
   pacman.up.copy(pacman.direction).applyAxisAngle(UP, -Math.PI / 2);
   pacman.lookAt(new THREE.Vector3().copy(pacman.position).add(UP));
 
@@ -62,12 +64,12 @@ function updatePacman() {
     pacman.direction.applyAxisAngle(UP, Math.PI);
     pacman.prevWasWall = 0;
   }
-  if (eatKey(37)) {
+  if (eatKey(37) && !map.isWall(left)) {
     // Left arrow
     pacman.direction.applyAxisAngle(UP, Math.PI / 2);
     pacman.prevWasWall = 0;
   }
-  if (eatKey(39)) {
+  if (eatKey(39) && !map.isWall(right)) {
     // Right arrow
     pacman.direction.applyAxisAngle(UP, -Math.PI / 2);
     pacman.prevWasWall = 0;
@@ -132,18 +134,49 @@ function updateCameras() {
   );
 }
 
-function update() {
-  if (eatKey('49')) currCam = 1;
-  if (eatKey('50')) currCam = 2;
-  if (eatKey('51')) currCam = 3;
+function updateGhosts() {
+  const pacman = map.pacman;
 
+  scene.children.forEach(function (obj) {
+    if (obj.isGhost) {
+      if (
+        obj.isAfraid &&
+        obj.becameAfraid + UP_DURATION < new Date().getTime() / 1000
+      ) {
+        obj.material.color.setStyle(obj.originalColor);
+        obj.isAfraid = false;
+      }
+
+      if (pacman.isPowered) {
+        obj.material.color.setStyle('#FFFFFF');
+        obj.isAfraid = true;
+        obj.becameAfraid = new Date().getTime() / 1000;
+      }
+
+      if (distance(pacman, obj) < PACMAN_RADIUS + GHOST_RADIUS) {
+        if (obj.isAfraid) {
+          scene.remove(obj);
+        } else {
+          dead = true;
+        }
+      }
+    }
+  });
+}
+
+function update() {
   updatePacman();
   updateCameras();
+  updateGhosts();
 }
 
 const animate = function () {
   setTimeout(() => {
-    update();
+    if (eatKey('49')) currCam = 1;
+    if (eatKey('50')) currCam = 2;
+    if (eatKey('51')) currCam = 3;
+
+    if (!dead) update();
     requestAnimationFrame(animate);
 
     switch (currCam) {

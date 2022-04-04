@@ -1,0 +1,14 @@
+* {
+    margin: 3px;
+    padding: 0;
+}
+
+body {
+  display: flex;
+}
+
+.info {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+}

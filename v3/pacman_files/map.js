@@ -5,8 +5,8 @@ const MAP = [
   'WoWWWW.WWWWW.WW.WWWWW.WWWWoW',
   'W.WWWW.WWWWW.WW.WWWWW.WWWW.W',
   'W..........................W',
-  'W.WWWW.WW.WWWWWWWW.WW.WWWW.W',
-  'W.WWWW.WW.WWWWWWWW.WW.WWWW.W',
+  'W.WWWW.WW.WW.WW.WW.WW.WWWW.W',
+  'W.WWWW.WW.WW.WW.WW.WW.WWWW.W',
   'W......WW....WW....WW......W',
   'W.WWWW.WWWWW WW WWWWW.WWWW.W',
   'W.WWWW.WWWWW WW WWWWW.WWWW.W',
@@ -75,6 +75,7 @@ function initMap(scene) {
           break;
         case 'G':
           map.ghostSpawn = new THREE.Vector3(x, y, 0);
+          map.lastGhostSpawn = new Date().getTime() / 1000;
           const ghost = createGhost('#FF0000');
           ghost.position.set(x, y, 0);
           scene.add(ghost);

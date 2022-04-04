@@ -1,14 +1,25 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
     <title>Pacman</title>
-</head>
+  </head>
 
-<body>
-    <canvas id="c" width="1024" height="1024"></canvas>
+  <body>
+    <canvas class="canvas" id="c" width="1024" height="1024"></canvas>
+    <div class="info">
+      <span>Controls:</span>
+      <span>1 First person</span>
+      <span>2 Third person</span>
+      <span>3 Overhead view</span>
+      <span>↑ Start moving</span>
+      <span>↓ Flip direction</span>
+      <span>→ Turn right</span>
+      <span>← Turn left</span>
+      <span>Spacebar (Third person) Look behind</span>
+    </div>
     <script src="pacman_files/three.js"></script>
     <script src="pacman_files/keys.js"></script>
     <script src="pacman_files/utils.js"></script>
@@ -16,6 +27,5 @@
     <script src="pacman_files/constants.js"></script>
     <script src="pacman_files/map.js"></script>
     <script src="pacman_files/pacman.js"></script>
-</body>
-
+  </body>
 </html>
