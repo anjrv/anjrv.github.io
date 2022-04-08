@@ -31,8 +31,8 @@ const overhead = new THREE.PerspectiveCamera(
 overhead.position.set(map.centerX - 0.5, map.centerY, 22);
 
 let currCam = 2;
-let PACMAN_SPEED = 0.05;
-let GHOST_SPEED = PACMAN_SPEED * 0.8;
+let pacmanSpeed = 0.05;
+let ghostSpeed = pacmanSpeed * 0.8;
 
 function updateCameras() {
   const pacman = map.pacman;
@@ -60,6 +60,8 @@ function updateCameras() {
 }
 
 function spawnGhost() {
+  if (GHOST_COLORS.length === 0) return; // Somethings fucky
+
   const ghost = createGhost(
     GHOST_COLORS.splice(Math.floor(Math.random() * GHOST_COLORS.length), 1)[0],
   );
@@ -72,7 +74,10 @@ function spawnGhost() {
 }
 
 function updateGhosts() {
-  if (map.ghosts < 4 && map.lastGhostSpawn + GHOST_SPAWNTIME < new Date().getTime() / 1000) {
+  if (
+    map.ghosts < 4 &&
+    map.lastGhostSpawn + GHOST_SPAWNTIME < new Date().getTime() / 1000
+  ) {
     spawnGhost();
   }
 
@@ -84,6 +89,38 @@ function updateGhosts() {
 }
 
 function update() {
+  if (pacman.dead || map.food === 0) {
+    map.food = 0;
+
+    scene.children.forEach(function (obj) {
+      if (obj.isGhost) {
+        GHOST_COLORS.push(obj.originalColor);
+        scene.remove(obj);
+      } else if (obj.isDot || obj.isPowerUp) {
+        obj.visible = true;
+        map.food++;
+      }
+    });
+
+    pacman.position.set(
+      map.pacmanSpawn.x,
+      map.pacmanSpawn.y,
+      map.pacmanSpawn.z,
+    );
+
+    pacman.direction.copy(LEFT);
+
+    map.ghosts = 0;
+    map.lastGhostSpawn = new Date().getTime() / 1000 - GHOST_SPAWNTIME;
+
+    if (!pacman.dead) {
+      pacmanSpeed *= 1.1;
+      ghostSpeed = pacmanSpeed * 0.8;
+    }
+
+    pacman.dead = false;
+  }
+
   pacman.update(map);
   updateCameras();
   updateGhosts();
@@ -95,7 +132,7 @@ const animate = function () {
     if (eatKey('50')) currCam = 2;
     if (eatKey('51')) currCam = 3;
 
-    if (!pacman.dead) update();
+    update();
     requestAnimationFrame(animate);
 
     switch (currCam) {

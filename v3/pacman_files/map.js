@@ -38,7 +38,7 @@ function initMap(scene) {
   map.top = 0;
   map.left = 0;
   map.right = MAP[0].length;
-  map.dots = 0;
+  map.food = 0;
   map.ghosts = 0;
   map.pacman = null;
   map.ghostSpawn = null;
@@ -61,13 +61,15 @@ function initMap(scene) {
         case '.':
           object = createDot();
           object.position.set(x, y, 0);
-          map.dots++;
+          map.food++;
           break;
         case 'o':
           object = createPowerUp();
           object.position.set(x, y, 0);
+          map.food++;
           break;
         case 'P':
+          map.pacmanSpawn = { x: x, y: y, z: 0 };
           const pacman = createPacman();
           pacman.position.set(x, y, 0);
           map.pacman = pacman;

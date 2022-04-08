@@ -33,7 +33,7 @@ function createDot() {
 }
 
 function createPowerUp() {
-  const geom = new THREE.SphereGeometry(UP_RADIUS, 16, 16);
+  const geom = new THREE.SphereGeometry(UP_RADIUS);
   const mat = new THREE.MeshStandardMaterial({
     color: '#CD607E',
     roughness: 0.0,
@@ -48,7 +48,7 @@ function createPowerUp() {
 function createPacman() {
   const geom = new THREE.SphereGeometry(
     PACMAN_RADIUS,
-    32,
+    64,
     32,
     0,
     Math.PI * 1.8,
@@ -127,7 +127,7 @@ function createPacman() {
     }
 
     if (pacman.isMoving && pacman.prevWasWall < 2)
-      pacman.translateOnAxis(LEFT, PACMAN_SPEED); // Try advance
+      pacman.translateOnAxis(LEFT, pacmanSpeed); // Try advance
 
     // Aggressively push out of walls
     if (map.isWall(up)) {
@@ -163,7 +163,7 @@ function createPacman() {
 }
 
 function createGhost(color) {
-  const geom = new THREE.SphereGeometry(GHOST_RADIUS, 32, 32);
+  const geom = new THREE.SphereGeometry(GHOST_RADIUS, 64, 32);
   const mat = new THREE.MeshStandardMaterial({ color: color });
   const ghost = new THREE.Mesh(geom, mat);
   ghost.direction = new THREE.Vector3(-1, 0, 0);
@@ -176,7 +176,7 @@ function createGhost(color) {
       .copy(ghost.position)
       .addScaledVector(ghost.direction, 0.5)
       .round();
-    ghost.translateOnAxis(ghost.direction, GHOST_SPEED);
+    ghost.translateOnAxis(ghost.direction, ghostSpeed);
 
     const curr = new THREE.Vector3()
       .copy(ghost.position)
