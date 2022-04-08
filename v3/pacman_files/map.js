@@ -74,7 +74,7 @@ function initMap(scene) {
           scene.add(pacman);
           break;
         case 'G':
-          map.ghostSpawn = new THREE.Vector3(x, y, 0);
+          map.ghostSpawn = { x: x, y: y, z: 0 };
           map.lastGhostSpawn = new Date().getTime() / 1000;
           const ghost = createGhost('#FF0000');
           ghost.position.set(x, y, 0);

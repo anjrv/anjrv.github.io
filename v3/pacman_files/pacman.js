@@ -3,6 +3,7 @@ const canvas = document.querySelector('#c');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 const scene = createScene();
 const map = initMap(scene);
+const pacman = map.pacman;
 
 // Cameras
 const firstPerson = new THREE.PerspectiveCamera(
@@ -30,84 +31,8 @@ const overhead = new THREE.PerspectiveCamera(
 overhead.position.set(map.centerX - 0.5, map.centerY, 22);
 
 let currCam = 2;
-let score = 0;
-let dead = false;
-
-function updatePacman() {
-  const pacman = map.pacman;
-
-  pacman.isPowered = false;
-  pacman.up.copy(pacman.direction).applyAxisAngle(UP, -Math.PI / 2);
-  pacman.lookAt(new THREE.Vector3().copy(pacman.position).add(UP));
-
-  const up = pacman.position
-    .clone()
-    .addScaledVector(TOP, PACMAN_RADIUS)
-    .round();
-  const down = pacman.position
-    .clone()
-    .addScaledVector(BOTTOM, PACMAN_RADIUS)
-    .round();
-  const left = pacman.position
-    .clone()
-    .addScaledVector(LEFT, PACMAN_RADIUS)
-    .round();
-  const right = pacman.position
-    .clone()
-    .addScaledVector(RIGHT, PACMAN_RADIUS)
-    .round();
-
-  if (eatKey(38)) pacman.isMoving = true; // Up arrow
-
-  if (eatKey(40)) {
-    // Down arrow
-    pacman.direction.applyAxisAngle(UP, Math.PI);
-    pacman.prevWasWall = 0;
-  }
-  if (eatKey(37) && !map.isWall(left)) {
-    // Left arrow
-    pacman.direction.applyAxisAngle(UP, Math.PI / 2);
-    pacman.prevWasWall = 0;
-  }
-  if (eatKey(39) && !map.isWall(right)) {
-    // Right arrow
-    pacman.direction.applyAxisAngle(UP, -Math.PI / 2);
-    pacman.prevWasWall = 0;
-  }
-
-  if (pacman.isMoving && pacman.prevWasWall < 2)
-    pacman.translateOnAxis(LEFT, PACMAN_SPEED); // Try advance
-
-  // Aggressively push out of walls
-  if (map.isWall(up)) {
-    pacman.position.y = up.y - 0.6 - PACMAN_RADIUS;
-    pacman.prevWasWall++;
-  }
-  if (map.isWall(down)) {
-    pacman.position.y = down.y + 0.6 + PACMAN_RADIUS;
-    pacman.prevWasWall++;
-  }
-  if (map.isWall(left)) {
-    pacman.position.x = left.x + 0.6 + PACMAN_RADIUS;
-    pacman.prevWasWall++;
-  }
-  if (map.isWall(right)) {
-    pacman.position.x = right.x - 0.6 - PACMAN_RADIUS;
-    pacman.prevWasWall++;
-  }
-
-  const cell = map.getCell(pacman.position);
-
-  if (cell && cell.visible) {
-    if (cell.isDot) {
-      map.clear(pacman.position);
-      score++;
-    } else if (cell.isPowerUp) {
-      map.clear(pacman.position);
-      pacman.isPowered = true;
-    }
-  }
-}
+let PACMAN_SPEED = 0.05;
+let GHOST_SPEED = PACMAN_SPEED * 0.8;
 
 function updateCameras() {
   const pacman = map.pacman;
@@ -134,38 +59,32 @@ function updateCameras() {
   );
 }
 
+function spawnGhost() {
+  const ghost = createGhost(
+    GHOST_COLORS.splice(Math.floor(Math.random() * GHOST_COLORS.length), 1)[0],
+  );
+
+  ghost.position.set(map.ghostSpawn.x, map.ghostSpawn.y, map.ghostSpawn.z);
+  scene.add(ghost);
+
+  map.lastGhostSpawn = new Date().getTime() / 1000;
+  map.ghosts++;
+}
+
 function updateGhosts() {
-  const pacman = map.pacman;
+  if (map.ghosts < 4 && map.lastGhostSpawn + GHOST_SPAWNTIME < new Date().getTime() / 1000) {
+    spawnGhost();
+  }
 
   scene.children.forEach(function (obj) {
     if (obj.isGhost) {
-      if (
-        obj.isAfraid &&
-        obj.becameAfraid + UP_DURATION < new Date().getTime() / 1000
-      ) {
-        obj.material.color.setStyle(obj.originalColor);
-        obj.isAfraid = false;
-      }
-
-      if (pacman.isPowered) {
-        obj.material.color.setStyle('#FFFFFF');
-        obj.isAfraid = true;
-        obj.becameAfraid = new Date().getTime() / 1000;
-      }
-
-      if (distance(pacman, obj) < PACMAN_RADIUS + GHOST_RADIUS) {
-        if (obj.isAfraid) {
-          scene.remove(obj);
-        } else {
-          dead = true;
-        }
-      }
+      obj.update(map, scene);
     }
   });
 }
 
 function update() {
-  updatePacman();
+  pacman.update(map);
   updateCameras();
   updateGhosts();
 }
@@ -176,7 +95,7 @@ const animate = function () {
     if (eatKey('50')) currCam = 2;
     if (eatKey('51')) currCam = 3;
 
-    if (!dead) update();
+    if (!pacman.dead) update();
     requestAnimationFrame(animate);
 
     switch (currCam) {
