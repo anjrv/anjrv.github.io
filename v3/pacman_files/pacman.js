@@ -31,8 +31,8 @@ const overhead = new THREE.PerspectiveCamera(
 overhead.position.set(map.centerX - 0.5, map.centerY, 22);
 
 let currCam = 2;
-let pacmanSpeed = 0.05;
-let ghostSpeed = pacmanSpeed * 0.8;
+let pacmanSpeed = PACMAN_SPEED;
+let ghostSpeed = GHOST_SPEED;
 
 function updateCameras() {
   const pacman = map.pacman;
@@ -92,14 +92,21 @@ function update() {
   if (pacman.dead || map.food === 0) {
     map.food = 0;
 
+    const flagged = [];
+
     scene.children.forEach(function (obj) {
       if (obj.isGhost) {
         GHOST_COLORS.push(obj.originalColor);
-        scene.remove(obj);
+        flagged.push(obj);
       } else if (obj.isDot || obj.isPowerUp) {
         obj.visible = true;
         map.food++;
       }
+    });
+
+    // Can't remove within loop, messes with indexing
+    flagged.forEach(function (ghost) {
+      scene.remove(ghost);
     });
 
     pacman.position.set(
@@ -116,6 +123,9 @@ function update() {
     if (!pacman.dead) {
       pacmanSpeed *= 1.1;
       ghostSpeed = pacmanSpeed * 0.8;
+    } else {
+      pacmanSpeed = PACMAN_SPEED;
+      ghostSpeed = GHOST_SPEED;
     }
 
     pacman.dead = false;
